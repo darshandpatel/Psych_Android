@@ -55,6 +55,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     double responseTime=0;
     double startTime=0;
     double endTime=0;
+    ParameterFile paramObject=null;
     HashMap<Bitmap,Boolean> imagesStream=null;
 
     @Override
@@ -75,7 +76,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
        // image=view.getDrawable();
         detector = new GestureDetector(this,this);
         Intent intent = getIntent();
-        speed = intent.getDoubleExtra("key", 1000);
+
+        paramObject=(ParameterFile)intent.getSerializableExtra("parameter");
         startPlayingTheGame();
         animZoomIn= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_zoom_in);
         animZoomOut= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_zoom_out);
@@ -196,16 +198,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     private class FetchImages extends AsyncTask<String,Void,Bitmap>{
         boolean isPositive=false;
         private ProgressDialog dialog;
+
         public FetchImages(boolean check){
             isPositive=check;
             //dialog=new ProgressDialog(that);
 
         }
 
-        protected void onPreExecute() {
-          //  dialog.setMessage("Loading image. Please wait.");
-           // dialog.show();
-        }
+
         @Override
         protected Bitmap doInBackground(String... urls){
             //get the image
@@ -246,9 +246,6 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
 
     }
-
-
-
 
     public void buildAlertDialog(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(

@@ -15,8 +15,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.ClientProtocolException;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 /**
  * Created by surindersokhal on 1/30/16.
@@ -27,6 +41,9 @@ public class Login_Activity extends Activity implements View.OnClickListener{
     Button loginButton=null,signUpButton=null;
     EditText userName=null;
     EditText passowrd=null;
+    final String URL="http://192.168.173.1:8080/TeenViolence/AuthenticatingUser";
+    final String ENCODING="UTF-8";
+    static ParameterFile paramObject=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,14 +52,13 @@ public class Login_Activity extends Activity implements View.OnClickListener{
         loginButton=(Button)findViewById(R.id.loginButton);
         signUpButton=(Button)findViewById(R.id.SignupButton);
 
-
         userName=(EditText)findViewById(R.id.eidtTextbox);
         passowrd=(EditText)findViewById(R.id.passowdTextbox);
-
 
         loginButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
 
+       /* new RequestToBuildParameterFile().execute();*/
         //Makes the activity to go to full screen.
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
           //      WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -73,20 +89,15 @@ public class Login_Activity extends Activity implements View.OnClickListener{
         protected Boolean doInBackground(ArrayList<String>... params) {
             String userName= params[0].get(0);
             String passowrd=params[0].get(1);
-            try{
-                Thread.sleep(3000);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-
+            System.out.println("Surcinder in asyn");
             return isCorrectLogin(userName,passowrd);
         }
 
         protected void onPostExecute(Boolean check){
             if(check){
-                Toast.makeText(Login_Activity.this,"Login Successful",Toast.LENGTH_SHORT);
+                Toast.makeText(Login_Activity.this,"Login Successful",Toast.LENGTH_LONG);
                 dialog.dismiss();
-                tell();
+                playGame();
             }else{
                 dialog.dismiss();
                 buildAlertDialog();
@@ -126,12 +137,35 @@ public class Login_Activity extends Activity implements View.OnClickListener{
     }
 
     public boolean isCorrectLogin(String userName,String passowrd){
+        try{
+            InputStream stream=buildConnection(URL);
+            String json=(IOUtils.toString(stream, ENCODING));
+            /*JSONObject object=new JSONObject(json);
+            return object.getInt("status")==0?false:true;*/
+            System.out.println("Strind "+ json);
+            return true;
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
         return true;
     }
-    public void tell(){
+    public void playGame(){
         Intent intent=new Intent(Login_Activity.this,PlayGame.class);
-        intent.putExtra("speed",100);
+        intent.putExtra("parameters",paramObject);
         Login_Activity.this.startActivity(intent);
+
+    }
+
+    public static InputStream buildConnection(String URL) throws IOException{
+        HttpClient httpclient = new DefaultHttpClient();
+        System.out.println("Surinder "+httpclient);
+        HttpGet httpget = new HttpGet(URL);
+        System.out.println("Surinder "+httpget);
+        HttpResponse response= (httpclient.execute(httpget));
+        InputStream stream=response.getEntity().getContent();
+        System.out.println(stream);
+        return stream;
 
     }
 }
