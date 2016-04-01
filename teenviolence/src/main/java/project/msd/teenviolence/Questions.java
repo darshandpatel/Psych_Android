@@ -80,7 +80,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view){
-        Intent intent=new Intent(Questions.this,PlayGame.class);
+        Intent intent=new Intent(Questions.this,PlayDemo.class);
         intent.putExtra("speed",100);
         Questions.this.startActivity(intent);
     }

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.GestureDetector;
 import android.view.View;
 import android.view.Window;
@@ -21,10 +22,19 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.concurrent.Semaphore;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.ClientProtocolException;
@@ -41,7 +51,10 @@ public class Login_Activity extends Activity implements View.OnClickListener{
     Button loginButton=null,signUpButton=null;
     EditText userName=null;
     EditText passowrd=null;
-    final String URL="http://192.168.173.1:8080/TeenViolence/AuthenticatingUser";
+    static File outputFile=null;
+    static boolean isDownloadComplete=false;
+    final String URL="http://10.0.2.2:8080/TeenViolenceServer/AuthenticatingUser?queryType=login";
+    final String DEMOURL="http://10.0.2.2:8080/TeenViolenceServer/ParameterServlet";
     final String ENCODING="UTF-8";
     static ParameterFile paramObject=null;
     @Override
@@ -58,6 +71,17 @@ public class Login_Activity extends Activity implements View.OnClickListener{
         loginButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
 
+        new Thread() {
+            public void run() {
+                try{
+                downloadDemoVideo();
+                isDownloadComplete=false;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }}.start();
+
        /* new RequestToBuildParameterFile().execute();*/
         //Makes the activity to go to full screen.
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -65,6 +89,27 @@ public class Login_Activity extends Activity implements View.OnClickListener{
 
 }
 
+    public void downloadDemoVideo() throws IOException{
+        InputStream stream=Login_Activity.buildConnection(DEMOURL + "?queryType=video");
+        File outputDir = Environment.getExternalStorageDirectory(); // context being the Activity pointer
+        outputFile = new File(outputDir, "hello2.mp4");
+
+        //outputFile =File.createTempFile("demo", ".mp4", outputDir);
+        OutputStream out = new FileOutputStream(outputFile);
+        byte[] buf = new byte[1024];
+        int len;
+        while((len=stream.read(buf))>0){
+            out.write(buf,0,len);
+            System.out.println("downloading");
+        }
+        out.close();
+        stream.close();
+        isDownloadComplete=true;
+
+        System.out.println("Done "+outputFile.getPath());
+
+
+    }
     @Override
     public void onClick(View view){
         if(view.getId()==R.id.loginButton){
@@ -83,14 +128,25 @@ public class Login_Activity extends Activity implements View.OnClickListener{
 
     }
 
+    public static boolean isValidUsername(String username){
+        Pattern p = Pattern.compile("^[A-Za-z0-9]+@");
+        Matcher m = p.matcher(username);
+        if(m.matches())
+            return true;
+        return true;
+    }
+
     class VerifyLogin extends AsyncTask<ArrayList<String>,Void, Boolean>{
 
         @Override
         protected Boolean doInBackground(ArrayList<String>... params) {
             String userName= params[0].get(0);
             String passowrd=params[0].get(1);
+            if(isValidUsername(userName)){
             System.out.println("Surcinder in asyn");
             return isCorrectLogin(userName,passowrd);
+            }
+            return false;
         }
 
         protected void onPostExecute(Boolean check){
@@ -139,12 +195,14 @@ public class Login_Activity extends Activity implements View.OnClickListener{
     public boolean isCorrectLogin(String userName,String passowrd){
         try{
             InputStream stream=buildConnection(URL);
-            String json=(IOUtils.toString(stream, ENCODING));
-            /*JSONObject object=new JSONObject(json);
-            return object.getInt("status")==0?false:true;*/
-            System.out.println("Strind "+ json);
-            return true;
-        }catch(IOException e){
+            String json=IOUtils.toString(stream,ENCODING);
+
+            System.out.println("String "+ String.valueOf(json)+" "+json.getClass());
+            JSONObject object=new JSONObject(json);
+            return /*object.getString("success")*/json.equalsIgnoreCase("true")?false:true;
+
+            //return true;
+        }catch(IOException | JSONException e){
             e.printStackTrace();
         }
 
@@ -161,7 +219,7 @@ public class Login_Activity extends Activity implements View.OnClickListener{
         HttpClient httpclient = new DefaultHttpClient();
         System.out.println("Surinder "+httpclient);
         HttpGet httpget = new HttpGet(URL);
-        System.out.println("Surinder "+httpget);
+        System.out.println("Surinder " + httpget);
         HttpResponse response= (httpclient.execute(httpget));
         InputStream stream=response.getEntity().getContent();
         System.out.println(stream);

@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -54,6 +55,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     int errorResponse=0;
     double responseTime=0;
     double startTime=0;
+    final static String POSITIVE_URL="http://10.0.2.2:8080/TeenViolenceServer/ImageFetcher";
+    final static String NEGATIVE_URL="http://10.0.2.2:8080/TeenViolenceServer/ImageFetcher";
     double endTime=0;
     ParameterFile paramObject=null;
     HashMap<Bitmap,Boolean> imagesStream=null;
@@ -95,16 +98,32 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     public void startPlayingTheGame(){
         final FetchImages fetchImages=null;
         int count=0;
+        final Random random=new Random();
         Thread thread=new Thread(){
             public void run(){
+               boolean check=false;
+                int counter=0;
                while(true) {
-                       //Positive Images
-                    new FetchImages(true).execute("");
-                       //Negative images
-                    new FetchImages(false).execute("");
+                   double start=System.nanoTime();
+                   check=random.nextInt(3)==1?true:false;
+                   new FetchImages(check).execute();
+                   if((System.nanoTime()-start)/1000000000>5);{
+                       semaphore.release();
+                   }try{
 
-                   break;
-               }
+                   semaphore.acquire();
+                   Thread.sleep(3000);
+                   }catch (Exception e){
+                       e.printStackTrace();
+                   }
+                   if(counter>10)
+                       break;
+                   counter++;
+
+
+
+
+                }
             }
         };
         thread.start();
@@ -142,7 +161,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
                             float distanceY) {
-        Log.d("---onScroll---",e1.toString()+e2.toString());
+        Log.d("---onScroll---", e1.toString() + e2.toString());
         return false;
     }
 
@@ -195,7 +214,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     }
 
 
-    private class FetchImages extends AsyncTask<String,Void,Bitmap>{
+    private class FetchImages extends AsyncTask<Void,Void,Bitmap>{
         boolean isPositive=false;
         private ProgressDialog dialog;
 
@@ -207,13 +226,18 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
 
         @Override
-        protected Bitmap doInBackground(String... urls){
+        protected Bitmap doInBackground(Void... urls){
             //get the image
-            String urlToFetchImage=urls[0];
+            String urlToFetchImage=null;
+            if(isPositive)
+                urlToFetchImage=POSITIVE_URL+"?param1=positive";
+            else
+                urlToFetchImage=NEGATIVE_URL+"?param1=negative";
             InputStream stream=null;
             try{
 
-            stream=new java.net.URL("http://www.funnydam.com/uploads/hello_sunshine_6894646119.jpg").openStream();
+                stream=Login_Activity.buildConnection(urlToFetchImage);
+            //stream=new java.net.URL("http://www.funnydam.com/uploads/hello_sunshine_6894646119.jpg").openStream();
              //stream=new BufferedInputStream(new FileInputStream(new File()));
 
 
@@ -228,8 +252,9 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
 //            buildAlertDialog();
 
-            Bitmap image= BitmapFactory.decodeStream(stream);
-
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2;
+            Bitmap image= BitmapFactory.decodeStream(stream,null,options);
             return image;
         }
 

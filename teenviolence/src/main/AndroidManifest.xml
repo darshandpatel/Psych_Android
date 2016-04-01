@@ -28,7 +28,8 @@
             android:name=".PlayGame"
             android:label="@string/app_name" />
         <activity android:name=".Register" />
-        <activity android:name=".Questions"></activity>
+        <activity android:name=".Questions" />
+        <activity android:name=".PlayDemo"></activity>
     </application>
 
 </manifest>

@@ -15,11 +15,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+
+import java.io.InputStream;
 import java.util.concurrent.Semaphore;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
     Button register,cancel;
+    static final String ENCODING="UTF-8";
+    ProgressDialog progressDialog=null;
+    static final String URL="http://10.0.2.2:8080/TeenViolenceServer/AuthenticatingUser?queryType=register";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,18 +40,44 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View view){
         if(view.getId()==R.id.register){
-            ProgressDialog dialog=new ProgressDialog(this);
-            dialog.setMessage("Verifying the user");
-            dialog.show();
+            progressDialog=new ProgressDialog(this);
+            progressDialog.setMessage("Verifying the user");
+            progressDialog.show();
 
             new FetchAggrement().execute("");
 
         }else{
-
+            createNextActivity(Login_Activity.class);
         }
 
     }
 
+    public void buildAlertDialog(String msg){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("User Registration failed");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        dialog.cancel();
+                    }
+                });
+
+
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
     class FetchAggrement extends AsyncTask<String,Void,String>{
 
         @Override
@@ -85,10 +118,17 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                         dialog.cancel();
                         new Thread() {
                             public void run() {
-                                BuildInstructions bi = new BuildInstructions(Register.this, semaphore);
+
+
                                 try {
+                                    boolean success = performRegistration(semaphore);
                                     semaphore.acquire();
-                                    createNextActivity();
+                                    if (success) {
+                                        progressDialog.dismiss();
+                                        BuildInstructions bi = new BuildInstructions(Register.this, semaphore);
+                                        semaphore.acquire();
+                                        createNextActivity(Questions.class);
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -117,8 +157,48 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
 
 
-    public void createNextActivity(){
-        Intent intent=new Intent(Register.this,Questions.class);
+    public boolean performRegistration(Semaphore sema){
+        try{
+        InputStream stream=Login_Activity.buildConnection(URL);
+        String result= IOUtils.toString(stream, ENCODING);
+            final JSONObject object=new JSONObject(result);
+            String status=object.getString("status");
+            if(status.equalsIgnoreCase("1")){
+                progressDialog.dismiss();
+                sema.release();
+                return true;
+            }
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try{
+                        progressDialog.dismiss();
+                    buildAlertDialog(object.getString("message"));;}
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            cleanAllEditTexts();
+            sema.release();
+            return false;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            progressDialog.dismiss();
+            return false;
+        }
+
+    }
+
+    public void cleanAllEditTexts(){
+
+    }
+
+    public void createNextActivity(Class clas){
+        Intent intent=new Intent(Register.this,clas);
         intent.putExtra("speed",100);
         Register.this.startActivity(intent);
     }
