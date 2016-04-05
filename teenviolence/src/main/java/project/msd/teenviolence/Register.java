@@ -1,24 +1,24 @@
 package project.msd.teenviolence;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.Spinner;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
@@ -26,13 +26,45 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     Button register,cancel;
     static final String ENCODING="UTF-8";
     ProgressDialog progressDialog=null;
-    static final String URL="http://10.0.2.2:8080/TeenViolenceServer/AuthenticatingUser?queryType=register";
+    static final String URL="http://1742aefa.ngrok.io/TeenViolenceServer/AuthenticatingUser?queryType=register";
+    Spinner age,gender;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    public void onBackPressed() {
+
+        return;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         register=(Button)findViewById(R.id.register);
         cancel=(Button)findViewById(R.id.Cancel);
+        age =(Spinner)findViewById(R.id.age);
+        gender=(Spinner)findViewById(R.id.gender);
+        ArrayList<String> list=new ArrayList<>();
+        list.add("select your age");
+
+        for(int i=0;i<53;i++){
+            list.add((i+18)+"");
+        }
+        ArrayAdapter adapter = new ArrayAdapter(this,R.layout.spinner_design,list);
+        ArrayAdapter adapter1=ArrayAdapter.createFromResource(this,R.array.gender_array,R.layout.spinner_design);
+        ArrayAdapter adapter2=ArrayAdapter.createFromResource(this,R.array.ethnicity_array,R.layout.spinner_design);
+        ArrayAdapter adapter3=ArrayAdapter.createFromResource(this,R.array.mobile_experience,R.layout.spinner_design);
+        ArrayAdapter adapter4=ArrayAdapter.createFromResource(this,R.array.education,R.layout.spinner_design);
+        gender.setAdapter(adapter1);
+        ((Spinner)findViewById(R.id.ethnicity)).setAdapter(adapter2);
+        ((Spinner)findViewById(R.id.mobile_exp)).setAdapter(adapter3);
+        ((Spinner)findViewById(R.id.education)).setAdapter(adapter4);
+
+        age.setAdapter(adapter);
         register.setOnClickListener(this);
         cancel.setOnClickListener(this);
     }
@@ -121,8 +153,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
 
                                 try {
-                                    boolean success = performRegistration(semaphore);
-                                    semaphore.acquire();
+                                    boolean success = true;//performRegistration(semaphore);
+                                    //semaphore.acquire();
                                     if (success) {
                                         progressDialog.dismiss();
                                         BuildInstructions bi = new BuildInstructions(Register.this, semaphore);
@@ -159,7 +191,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     public boolean performRegistration(Semaphore sema){
         try{
-        InputStream stream=Login_Activity.buildConnection(URL);
+        InputStream stream=BuildConnections.buildConnection(URL);
         String result= IOUtils.toString(stream, ENCODING);
             final JSONObject object=new JSONObject(result);
             String status=object.getString("status");

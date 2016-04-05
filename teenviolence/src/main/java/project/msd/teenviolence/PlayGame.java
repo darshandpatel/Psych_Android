@@ -6,34 +6,25 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
-import android.view.Display;
-
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
@@ -41,98 +32,149 @@ import java.util.concurrent.Semaphore;
 /**
  * Created by surindersokhal on 1/30/16.
  */
-public class PlayGame extends Activity implements GestureDetector.OnGestureListener,Animation.AnimationListener {
+public class PlayGame extends Activity implements GestureDetector.OnGestureListener, Animation.AnimationListener {
 
-    private Animation animZoomIn=null;
-    private Animation animZoomOut=null;
-    public Drawable image=null;
-    private double speed=0;
-    GestureDetector detector=null;
-    Semaphore semaphore =new Semaphore(0,true);
-    ImageView view =null;
-    PlayGame that=null;
-    int correctResponse=0;
-    int errorResponse=0;
-    double responseTime=0;
-    double startTime=0;
-    final static String POSITIVE_URL="http://10.0.2.2:8080/TeenViolenceServer/ImageFetcher";
-    final static String NEGATIVE_URL="http://10.0.2.2:8080/TeenViolenceServer/ImageFetcher";
-    double endTime=0;
-    ParameterFile paramObject=null;
-    HashMap<Bitmap,Boolean> imagesStream=null;
+    static String backgroundColor = "";
+    static int nextCounter = 0;
 
+    static boolean nextImageNeeded = false;
+    static boolean gameOver = false;
+    static boolean paintInPostExecuteNeeded = true;
+    GestureDetector detector = null;
+    Semaphore semaphore = new Semaphore(0, true);
+    ImageView view = null;
+    PlayGame that = null;
+    long startTime = 0, endTime = 0;
+    int correctResponses = 0;
+    static ArrayList<TestSubjectResults> testSubjectResults = new ArrayList<TestSubjectResults>(); ;
+    int totalImages = 10;
+    ParameterFile paramObject = null;
+    HashMap<Bitmap, Boolean> imagesStream = null;
+    ProgressDialog dialog = null;
+    private Animation animZoomIn = null;
+    private Animation animZoomOut = null, animNormal = null;
+    LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        imagesStream=new HashMap<Bitmap,Boolean>();
-
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        that=this;
-        setContentView(R.layout.play_game);
-        //Makes the activity to go to full screen.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        view=(ImageView)findViewById(R.id.imageView);
-       // image=view.getDrawable();
-        detector = new GestureDetector(this,this);
+        setContentView(R.layout.play_game);
+        dialog = new ProgressDialog(this);
+
+
+        that = this;
+
+        linearLayout=(LinearLayout)findViewById(R.id.layoutID);
+        System.out.println("Linear"+linearLayout);
+        System.out.println("Linear" + (LinearLayout) findViewById(R.id.layoutID));
+        linearLayout.setBackgroundColor(Color.rgb(12, 12, 12));
+
+        //Makes the activity to go to full screen.
+
+        view = (ImageView) findViewById(R.id.imageView);
+        // image=view.getDrawable();
+        detector = new GestureDetector(this, this);
         Intent intent = getIntent();
 
-        paramObject=(ParameterFile)intent.getSerializableExtra("parameter");
-        startPlayingTheGame();
-        animZoomIn= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_zoom_in);
-        animZoomOut= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_zoom_out);
+        paramObject = (ParameterFile) intent.getSerializableExtra("parameter");
+        new Thread(){public void run(){
+        startPlayingTheGame();}}.start();
+        ;
+        animZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_zoom_in);
+        animZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_zoom_out);
+        animNormal = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_normal);
+        animZoomIn.setAnimationListener(this);
+        animZoomOut.setAnimationListener(this);
+
     }
 
 
-
-    public void fingerSwipedUp(){
+    public void fingerSwipedUp() {
         view.startAnimation(animZoomIn);
-
     }
-    public void fingerSwipeDown(){
+
+    public void fingerSwipeDown() {
         view.startAnimation(animZoomOut);
     }
-    public void startPlayingTheGame(){
-        final FetchImages fetchImages=null;
-        int count=0;
-        final Random random=new Random();
-        Thread thread=new Thread(){
-            public void run(){
-               boolean check=false;
-                int counter=0;
-               while(true) {
-                   double start=System.nanoTime();
-                   check=random.nextInt(3)==1?true:false;
-                   new FetchImages(check).execute();
-                   if((System.nanoTime()-start)/1000000000>5);{
-                       semaphore.release();
-                   }try{
 
-                   semaphore.acquire();
-                   Thread.sleep(3000);
-                   }catch (Exception e){
-                       e.printStackTrace();
-                   }
-                   if(counter>10)
-                       break;
-                   counter++;
+    public void startPlayingTheGame() {
+        final FetchImages fetchImages = null;
+        int count = 0;
+        if(testSubjectResults.size()<ParameterFile.totalGames){
 
-
-
-
-                }
+           Login_Activity.fetchImagesExecutorService();
+        }
+        Thread thread1 = new Thread() {
+            public void run() {
+                paintImages();
             }
         };
-        thread.start();
+        thread1.start();
 
+    }
+
+
+    public void paintNextImage() {
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                view.startAnimation(animNormal);
+                if(testSubjectResults.get(nextCounter).isPositive){
+                    linearLayout.setBackgroundColor(Color.GREEN);
+                }else{
+                    linearLayout.setBackgroundColor(Color.RED);
+                }
+                view.setImageBitmap(testSubjectResults.get(nextCounter).image);
+            }
+        });
+
+        nextCounter++;
+        nextImageNeeded = false;
+        dialog.dismiss();
+        paintInPostExecuteNeeded=false;
+        startTime = System.nanoTime();
+    }
+
+
+    public void paintImages() {
+        while (!gameOver) {
+            if (nextCounter>= ParameterFile.totalGames) {
+                gameOver=true;
+                
+                buildReport();
+                break;
+            }
+
+
+
+            if((System.nanoTime()-startTime)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
+                System.out.println("Time is greater");
+                testSubjectResults.get(nextCounter-1).isAttempted=false;
+                nextImageNeeded=true;
+            }
+
+            if(nextImageNeeded && ((nextCounter) > (testSubjectResults.size() - 1))){
+                paintInPostExecuteNeeded=true;
+                dialog.dismiss();
+            }
+            if ((nextCounter==0 && testSubjectResults.size()>1 )|| nextImageNeeded) {
+                paintNextImage();
+            }
+
+            if(paintInPostExecuteNeeded && !dialog.isShowing()){
+                dialog.setMessage("Please wait while next image is being fetched");
+                dialog.show();
+
+            }
+        }
     }
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent me){
+    public boolean onTouchEvent(MotionEvent me) {
         this.detector.onTouchEvent(me);
         return super.onTouchEvent(me);
     }
@@ -146,16 +188,59 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                            float velocityY) {
-        Log.d("---onFling---",e1.toString()+e2.toString());
+        Log.d("---onFling---", e1.toString() + e2.toString());
+        TestSubjectResults results = testSubjectResults.get(nextCounter-1);
+        results.isAttempted = true;
+        try{
+        if (e1.getY() - e2.getY() > 10) {
+            fingerSwipedUp();
+            results.responseAccurate = results.isPositive == true ? true : false;
+        }
+        if (e1.getY() - e2.getY() < -10) {
+            fingerSwipeDown();
 
-        endTime=System.nanoTime();
-        responseTime+=(endTime-startTime);
+            results.responseAccurate = results.isPositive == false ? true : false;
+        }}catch (Exception e){
+                e.printStackTrace();
+        }
+        endTime = System.nanoTime();
+        results.time = (endTime - startTime);
+      //  checkForNextImage();
         return false;
     }
 
+    public void checkForNextImage() {
+        if (nextCounter <= ParameterFile.totalGames) {
+            if (nextCounter-1 < testSubjectResults.size() - 1) {
+                nextImageNeeded = true;
+            } else {
+                paintInPostExecuteNeeded = true;
+                dialog.dismiss();
+
+            }
+        }else{
+            gameOver=true;
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    view.startAnimation(animNormal);
+                }});
+            buildReport();
+        }
+    }
+
+    public void buildReport(){
+        for(TestSubjectResults result:testSubjectResults){
+
+            System.out.println("Surinder feedback: "+result.isAttempted+" "+result.time+" "+result.isPositive+" "+result.imageName+" "+result.backgroundColor);
+        }
+        Intent intent=new Intent(PlayGame.this,HomeScreen.class);
+        intent.putExtra("text","Thank you for playing.");
+        PlayGame.this.startActivity(intent);
+
+    }
     @Override
     public void onLongPress(MotionEvent e) {
-        Log.d("---onLongPress---",e.toString());
+        Log.d("---onLongPress---", e.toString());
     }
 
     @Override
@@ -172,14 +257,13 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.d("---onSingleTapUp---",e.toString());
+        Log.d("---onSingleTapUp---", e.toString());
         return false;
     }
 
 
     //gets the current orientation of the phone.
-    public int getScreenOrientation()
-    {
+    public int getScreenOrientation() {
         final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).
                 getDefaultDisplay().getOrientation();
         switch (rotation) {
@@ -196,16 +280,17 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
     @Override
     public void onAnimationStart(Animation animation) {
-
-    }
+        Log.i("Animation", "start");
+     }
 
     @Override
     public void onAnimationEnd(Animation animation) {
+        Log.i("Animation", "end");
         try{
-        Thread.sleep(100);}
-        catch (Exception e){
+            Thread.sleep(400);}catch (Exception e){
             e.printStackTrace();
         }
+        checkForNextImage();
     }
 
     @Override
@@ -213,66 +298,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
     }
 
-
-    private class FetchImages extends AsyncTask<Void,Void,Bitmap>{
-        boolean isPositive=false;
-        private ProgressDialog dialog;
-
-        public FetchImages(boolean check){
-            isPositive=check;
-            //dialog=new ProgressDialog(that);
-
-        }
-
-
-        @Override
-        protected Bitmap doInBackground(Void... urls){
-            //get the image
-            String urlToFetchImage=null;
-            if(isPositive)
-                urlToFetchImage=POSITIVE_URL+"?param1=positive";
-            else
-                urlToFetchImage=NEGATIVE_URL+"?param1=negative";
-            InputStream stream=null;
-            try{
-
-                stream=Login_Activity.buildConnection(urlToFetchImage);
-            //stream=new java.net.URL("http://www.funnydam.com/uploads/hello_sunshine_6894646119.jpg").openStream();
-             //stream=new BufferedInputStream(new FileInputStream(new File()));
-
-
-            }/*catch(MalformedURLException malformedException){
-
-                malformedException.printStackTrace();
-            }*/catch(IOException ioException){
-                ioException.printStackTrace();
-            }
-           // InputStream s=that.getResources().openRawResource(R.drawable.background);
-           // = Bitmap.
-
-//            buildAlertDialog();
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 2;
-            Bitmap image= BitmapFactory.decodeStream(stream,null,options);
-            return image;
-        }
-
-        protected void onPostExecute(Bitmap image)
-        {
-            imagesStream.put(image,isPositive);
-            view.setImageBitmap(image);
-
-            startTime=System.nanoTime();
-           // dialog.dismiss();
-            semaphore.release();;
-        }
-
-
-
-    }
-
-    public void buildAlertDialog(){
+    public void buildAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
 
@@ -283,8 +309,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         alertDialogBuilder
                 .setMessage("Invalid username or pasword")
                 .setCancelable(false)
-                .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, close
                         // current activity
                         dialog.cancel();
@@ -292,10 +318,11 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                 });
 
 
-
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
         alertDialog.show();
     }
+
+
 }

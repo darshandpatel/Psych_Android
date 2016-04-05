@@ -23,7 +23,7 @@ public class RequestToBuildParameterFile extends AsyncTask<Void,Void,Void> {
     protected Void doInBackground(Void... params ) {
 
         try{
-        InputStream stream=Login_Activity.buildConnection(URL);
+        InputStream stream=BuildConnections.buildConnection(URL);
 
             String json=new Gson().toJson(IOUtils.toString(stream, ENCODING));
             Login_Activity.paramObject=new Gson().fromJson(json, ParameterFile.class);

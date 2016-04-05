@@ -16,11 +16,15 @@ import java.util.concurrent.Semaphore;
  */
 public class BuildInstructions {
 
-    Register context=null;
+    Context context=null;
     Semaphore semaphore=null;
     String[] instructions=null;
-    public BuildInstructions(Register object,Semaphore sem){
-        context= (Register)object;
+    public BuildInstructions(Object object,Semaphore sem){
+        if(object instanceof Register){
+        context= (Register)object;}
+        if(object instanceof HomeScreen){
+            context= (HomeScreen)object;
+        }
         semaphore=sem;
         new FetchInstructions().execute("");
 

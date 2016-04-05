@@ -2,20 +2,46 @@
     <string name="app_name">TeenViolence</string>
     <string name="gender">Gender</string>
     <string-array name="gender_array">
-        <item>Male</item>
-        <item>Female</item>
+        <item>Ethnicity</item>
+        <item>African American/Black</item>
+        <item>Hispanic/Latino</item>
+        <item>Asian</item>
+        <item>Middle Eastern</item>
+        <item>Pacific Islander</item>
+        <item>Native American/Alaskan</item>
+        <item>Native American/Alaskan</item>
+        <item>Other</item>
+        <item>Choose not to specify</item>
+        <item>N/A</item>
+
     </string-array>
 
-    <string name="age">Age</string>
-    <string-array name="age_group">
-        <item>0 - 10</item>
-        <item>10 - 20</item>
-        <item>20 - 30</item>
-        <item>30 - 40</item>
-        <item>40 - 50</item>
-        <item>50 - 60</item>
-        <item>60 - 70</item>
-        <item>Above 70</item>
+
+    <string-array name="ethnicity_array">
+        <item>gender</item>
+        <item>male</item>
+        <item>female</item>
+        <item>choose not to disclose</item>
+    </string-array>
+
+
+    <string-array name="education">
+        <item>education</item>
+        <item>high school</item>
+        <item>undergraduate</item>
+        <item>graduate</item>
+        <item>doctors</item>
+        <item>choose not to disclose</item>
+    </string-array>
+
+
+    <string-array name="mobile_experience">
+        <item>Mobile experience</item>
+        <item>new user</item>
+        <item>average</item>
+        <item>above average</item>
+        <item>expertise</item>
+        <item>choose not to disclose</item>
     </string-array>
 
 
