@@ -8,7 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#121212"
-    tools:context="project.msd.teenviolence.Register">
+    tools:context="project.msd.teenviolence.Register"
+    >
     <ScrollView
 
         android:layout_width="fill_parent"
@@ -18,18 +19,21 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:orientation="horizontal"
+        android:focusable="false"
         >
 
 
         <EditText
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text"
             android:singleLine="true"
@@ -40,9 +44,36 @@
             android:textColor="@android:color/white"
             android:textColorHint="#DDAAAAAA"
             android:paddingBottom="10dp"
+            android:id="@+id/username"
             android:layout_weight="1"/>
         </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:focusable="false"
+        >
+
+
+        <EditText
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text"
+            android:singleLine="true"
+            android:hint="enter your password"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#DDAAAAAA"
+            android:paddingBottom="10dp"
+            android:id="@+id/password"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/spinner_style"
-            android:textSize="24dp"
+            android:textSize="18dp"
             android:layout_weight="1">
 
         </Spinner>
@@ -77,7 +108,7 @@
             android:layout_height="wrap_content"
             android:prompt="@string/gender"
             android:entries="@array/gender_array"
-            android:textSize="20dp"
+            android:textSize="18dp"
              style="@style/spinner_style"
             android:layout_weight="1">
         </Spinner>
@@ -98,7 +129,7 @@
             android:layout_height="wrap_content"
             android:prompt="@string/gender"
             android:entries="@array/ethnicity_array"
-            android:textSize="20dp"
+            android:textSize="18dp"
             style="@style/spinner_style"
             android:layout_weight="1">
         </Spinner>
@@ -119,7 +150,7 @@
             android:layout_height="wrap_content"
             android:prompt="@string/gender"
             android:entries="@array/education"
-            android:textSize="20dp"
+            android:textSize="18dp"
             style="@style/spinner_style"
             android:layout_weight="1">
         </Spinner>
@@ -140,7 +171,7 @@
             android:layout_height="wrap_content"
             android:prompt="@string/gender"
             android:entries="@array/mobile_experience"
-            android:textSize="20dp"
+            android:textSize="18dp"
             style="@style/spinner_style"
             android:layout_weight="1">
         </Spinner>
@@ -161,6 +192,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text"
             android:singleLine="true"
+            android:id="@+id/psycoMed"
             android:hint="psycothereputic medications if any"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
@@ -182,7 +214,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Color Blindness"
-            android:layout_weight="1"
+            android:layout_weight="0.35"
+
             android:textSize="18dp"
             android:paddingLeft="15dp"
             android:textColor="#DDAAAAAA"
@@ -191,10 +224,11 @@
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/colorblindness"
             android:theme="@android:style/Theme.Holo"
             android:layout_marginLeft="@android:dimen/app_icon_size"
             android:textColor="@android:color/black"
-            android:layout_weight="1"
+            android:layout_weight="0.65"
             />
 
 
@@ -211,7 +245,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Disability Status"
-            android:layout_weight="1"
+            android:layout_weight="0.35"
             android:textSize="18dp"
             android:paddingLeft="15dp"
             android:textColor="#DDAAAAAA"
@@ -219,11 +253,12 @@
 
         <CheckBox
             android:layout_width="match_parent"
+            android:id="@+id/disability"
             android:layout_height="wrap_content"
             android:theme="@android:style/Theme.Holo"
             android:layout_marginLeft="@android:dimen/app_icon_size"
             android:textColor="@android:color/black"
-            android:layout_weight="1"
+            android:layout_weight="0.65"
             />
 
 

@@ -23,8 +23,8 @@ public class FetchImages implements Runnable {
 
     static RequestQueue requestQueue = null;
     static Semaphore semaphore = new Semaphore(0, true);
-    final static String POSITIVE_URL = "http://1742aefa.ngrok.io/TeenViolenceServer/ImageFetcher";
-    final static String NEGATIVE_URL = "http://1742aefa.ngrok.io/TeenViolenceServer/ImageFetcher";
+    final static String POSITIVE_URL = "http://468d06e3.ngrok.io/TeenViolenceServer/ImageFetcher";
+    final static String NEGATIVE_URL = "http://468d06e3.ngrok.io/TeenViolenceServer/ImageFetcher";
     final static Random random = new Random();
 
 
@@ -67,6 +67,8 @@ public class FetchImages implements Runnable {
         temp.backgroundColor = color;
         temp.image = image;
         temp.isPositive = isPositive;
+        temp.imageX=image.getWidth();
+        temp.imageY=image.getHeight();
         temp.time = ParameterFile.time;
         synchronized (PlayGame.testSubjectResults) {
             PlayGame.testSubjectResults.add(temp);

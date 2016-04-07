@@ -29,17 +29,16 @@
             android:layout_height="wrap_content"
             android:id="@+id/q1"
             android:singleLine="false"
+            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:textColor="@android:color/white"/>
 
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="1"
-            android:shrinkColumns="0"
-            >
-            <TableRow>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            
                 <SeekBar
                     android:id="@+id/seekBar1"
                     android:layout_width="300dp"
@@ -51,20 +50,9 @@
                     android:background="@drawable/edit_text"
                     android:max="5"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:singleLine="true"
-                    android:textSize="10dp"
-                    android:id="@+id/seekBar1TextView"
-                    android:textColor="@android:color/white"
-                    android:gravity="right"
-                    android:ellipsize="none"/>
+        </LinearLayout>
 
 
-            </TableRow>
-        </TableLayout>
 
 
         <!-- First question ends here-->
@@ -75,6 +63,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/q2"
             android:singleLine="false"
+            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:textColor="@android:color/white"/>
 
@@ -92,12 +81,7 @@
                 android:background="@drawable/edit_text"
                 android:max="5"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:id="@+id/seekBar2TextView"
-                android:textColor="@android:color/white"/>
+
         </LinearLayout>
 
         <!-- First question ends here-->
@@ -109,13 +93,15 @@
             android:id="@+id/q3"
             android:singleLine="false"
             android:layout_weight="1"
+            android:layout_marginBottom="15dp"
             android:textColor="@android:color/white"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            >
 
             <SeekBar
                 android:id="@+id/seekBar3"
@@ -128,13 +114,6 @@
                 android:background="@drawable/edit_text"
                 android:max="5"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:id="@+id/seekBar3TextView"
-                android:textColor="@android:color/white"/>
         </LinearLayout>
 
         <!-- First question ends here-->
@@ -145,6 +124,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/q4"
             android:singleLine="false"
+            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:textColor="@android:color/white"/>
 
@@ -160,16 +140,11 @@
                 android:layout_weight="0.75" android:layout_marginRight="8dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/edit_text"
                 android:max="5"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:id="@+id/seekBar4TextView"
-                android:textColor="@android:color/white"/>
+
         </LinearLayout>
 
         <!-- First question ends here-->
@@ -181,6 +156,7 @@
             android:id="@+id/q5"
             android:singleLine="false"
             android:layout_weight="1"
+            android:layout_marginBottom="15dp"
             android:textColor="@android:color/white"/>
 
         <LinearLayout
@@ -195,16 +171,10 @@
                 android:layout_weight="0.75" android:layout_marginRight="8dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/edit_text"
                 android:max="5"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:id="@+id/seekBar5TextView"
-                android:textColor="@android:color/white"/>
         </LinearLayout>
 
         <!-- First question ends here-->
@@ -229,7 +199,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textAlignment="center"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:hint="enter your response here"
                 android:textColorHint="#DDAAAAAA"
                 android:background="@drawable/edit_text"
@@ -261,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textAlignment="center"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:hint="enter your response here"
                 android:textColorHint="#DDAAAAAA"
                 android:background="@drawable/edit_text"
@@ -293,7 +263,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textAlignment="center"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:hint="enter your response here"
                 android:textColorHint="#DDAAAAAA"
                 android:background="@drawable/edit_text"
@@ -324,7 +294,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textAlignment="center"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:hint="enter your response here"
                 android:textColorHint="#DDAAAAAA"
                 android:background="@drawable/edit_text"
@@ -356,7 +326,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textAlignment="center"
-                android:layout_marginTop="26dp"
+                android:layout_marginBottom="15dp"
                 android:hint="enter your response here"
                 android:textColorHint="#DDAAAAAA"
                 android:background="@drawable/edit_text"
@@ -378,6 +348,9 @@
             android:background="@drawable/button"
             android:textColor="#FFFFFF"
             android:text="submit"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_marginBottom="15dp"
             android:layout_marginLeft="20dp"
             android:layout_weight="0.2"
             android:textAllCaps="false"/>

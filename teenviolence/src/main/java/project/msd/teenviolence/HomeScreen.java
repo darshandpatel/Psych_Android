@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,14 +33,40 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
         demo.setOnClickListener(this);
         instruction.setOnClickListener(this);
         game.setOnClickListener(this);
+        MenuPouplateItems.questions = this;
 
     }
 
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.help:
+                MenuPouplateItems.showHelp();
+                return true;
+            case R.id.logout:
+                MenuPouplateItems.logout();
+                return true;
+            case R.id.feedback:
+                MenuPouplateItems.showFeedback(textView.getText().toString());
+                return true;
+            case R.id.demo:
+                MenuPouplateItems.showDemo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 
     @Override
     public void onClick(View view) {

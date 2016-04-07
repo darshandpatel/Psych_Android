@@ -34,26 +34,29 @@ import java.util.concurrent.Semaphore;
  */
 public class PlayGame extends Activity implements GestureDetector.OnGestureListener, Animation.AnimationListener {
 
-    static String backgroundColor = "";
     static int nextCounter = 0;
 
+    static int totalCorrectResponse=0;
+    static int totalwrongResponse=0;
+    static int unattemptedQuestions=0;
+    static long totalTimeTaken=0;
+    static int totalQuestions=0;
     static boolean nextImageNeeded = false;
     static boolean gameOver = false;
     static boolean paintInPostExecuteNeeded = true;
     GestureDetector detector = null;
-    Semaphore semaphore = new Semaphore(0, true);
+
     ImageView view = null;
     PlayGame that = null;
     long startTime = 0, endTime = 0;
     int correctResponses = 0;
     static ArrayList<TestSubjectResults> testSubjectResults = new ArrayList<TestSubjectResults>(); ;
-    int totalImages = 10;
-    ParameterFile paramObject = null;
-    HashMap<Bitmap, Boolean> imagesStream = null;
+
     ProgressDialog dialog = null;
     private Animation animZoomIn = null;
     private Animation animZoomOut = null, animNormal = null;
     LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,34 +66,24 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
         setContentView(R.layout.play_game);
         dialog = new ProgressDialog(this);
-
-
         that = this;
 
         linearLayout=(LinearLayout)findViewById(R.id.layoutID);
-        System.out.println("Linear"+linearLayout);
-        System.out.println("Linear" + (LinearLayout) findViewById(R.id.layoutID));
         linearLayout.setBackgroundColor(Color.rgb(12, 12, 12));
-
-        //Makes the activity to go to full screen.
-
         view = (ImageView) findViewById(R.id.imageView);
-        // image=view.getDrawable();
         detector = new GestureDetector(this, this);
-        Intent intent = getIntent();
-
-        paramObject = (ParameterFile) intent.getSerializableExtra("parameter");
         new Thread(){public void run(){
         startPlayingTheGame();}}.start();
-        ;
+        loadAnimaions();
+    }
+
+    public void loadAnimaions(){
         animZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_zoom_in);
         animZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_zoom_out);
         animNormal = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_normal);
         animZoomIn.setAnimationListener(this);
         animZoomOut.setAnimationListener(this);
-
     }
-
 
     public void fingerSwipedUp() {
         view.startAnimation(animZoomIn);
@@ -101,18 +94,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     }
 
     public void startPlayingTheGame() {
-        final FetchImages fetchImages = null;
-        int count = 0;
+
         if(testSubjectResults.size()<ParameterFile.totalGames){
 
            Login_Activity.fetchImagesExecutorService();
         }
-        Thread thread1 = new Thread() {
-            public void run() {
-                paintImages();
-            }
-        };
-        thread1.start();
+
+        paintImages();
+
 
     }
 
@@ -152,6 +141,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
             if((System.nanoTime()-startTime)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
                 System.out.println("Time is greater");
+                unattemptedQuestions++;
                 testSubjectResults.get(nextCounter-1).isAttempted=false;
                 nextImageNeeded=true;
             }
@@ -228,15 +218,28 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         }
     }
 
-    public void buildReport(){
-        for(TestSubjectResults result:testSubjectResults){
 
+    public void buildReport(){
+        totalQuestions=testSubjectResults.size();
+        ParameterFile.isGamePlayed=true;
+        for(TestSubjectResults result:testSubjectResults){
+            getCorrect_IncorrectResponses(result);
+            totalTimeTaken+=result.time;
             System.out.println("Surinder feedback: "+result.isAttempted+" "+result.time+" "+result.isPositive+" "+result.imageName+" "+result.backgroundColor);
         }
         Intent intent=new Intent(PlayGame.this,HomeScreen.class);
         intent.putExtra("text","Thank you for playing.");
         PlayGame.this.startActivity(intent);
 
+    }
+
+    public void getCorrect_IncorrectResponses(TestSubjectResults result){
+        if(result.isAttempted){
+            if(result.responseAccurate)
+                correctResponses++;
+            if(!result.responseAccurate)
+                totalwrongResponse++;
+        }
     }
     @Override
     public void onLongPress(MotionEvent e) {

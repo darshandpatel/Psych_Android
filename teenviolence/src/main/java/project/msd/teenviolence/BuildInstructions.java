@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+
+import java.io.InputStream;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -16,6 +20,7 @@ import java.util.concurrent.Semaphore;
  */
 public class BuildInstructions {
 
+    static final String URL="http://1742aefa.ngrok.io/TeenViolenceServer/FetchParameters?queryType=instructions";
     Context context=null;
     Semaphore semaphore=null;
     String[] instructions=null;
@@ -33,9 +38,17 @@ public class BuildInstructions {
     class FetchInstructions extends AsyncTask<String,Void,String[]>{
 
         protected String[] doInBackground(String... parm){
-            String address="";
-            //fetch address
-            String[] array={"1","2","3","4","5"};
+            String instructions=null;
+            try {
+                InputStream stream = BuildConnections.buildConnection(URL);
+                instructions= IOUtils.toString(stream,"UTF-8");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            String[] array=instructions.split("\n");
+            array[array.length-2]= array[array.length-2]+" "+ParameterFile.positiveColor;
+            array[array.length-1]= array[array.length-1]+" "+ParameterFile.negativeColor;
             return array;
         }
         protected void onPostExecute(String array[]){
@@ -52,8 +65,6 @@ public class BuildInstructions {
         alertDialog.setTitle("List");
         alertDialog.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // if this button is clicked, close
-                // current activity
                 dialog.cancel();
                 semaphore.release();
 
