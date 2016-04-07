@@ -47,7 +47,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener{
         correct.setText(PlayGame.totalCorrectResponse+"");
         wrong.setText(PlayGame.totalwrongResponse+"");
         total.setText(PlayGame.unattemptedQuestions+"");
-        totalAsked.setText(PlayGame.totalQuestions+"");
+        totalAsked.setText(PlayGame.totalQuestions + "");
 
     }
 
@@ -64,5 +64,11 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener{
     public void onBackPressed() {
 
         return;
+    }
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        Login_Activity.outputFile.delete();
+
     }
 }

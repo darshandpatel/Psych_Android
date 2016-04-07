@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.view.View;
 
 import android.widget.Button;
@@ -46,7 +47,8 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     static File outputFile = null;
     static Login_Activity activity = null;
     //static String ADDRESS="http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
-    static String ADDRESS = "http://468d06e3.ngrok.io/TeenViolenceServer/";
+    static String ADDRESS = "http://f2a21c87.ngrok.io/TeenViolenceServer/";
+
 
     static boolean isDownloadComplete = false;
 
@@ -75,6 +77,13 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     }
 
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        outputFile.delete();
+
+    }
     public void onBackPressed() {
 
         return;
@@ -113,13 +122,20 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         try {
             isDownloadStarted = true;
             InputStream stream = BuildConnections.buildConnection(DEMOURL + "?queryType=video");
-            File outputDir = activity.getCacheDir(); // context being the Activity pointer
-            outputFile = new File(outputDir + "/demo.mp4");
-            if (outputFile.exists()) {
-                return;
+            File outputDir = Environment.getExternalStorageDirectory(); // context being the Activity pointer
+            //outputFile = new File(outputDir + "/demo.mp4");
+
+            outputFile=new File(outputDir.getPath()+"/demo.mp4");
+            if(outputFile.exists()){
+                isDownloadComplete = true;
+                System.out.println("Done Already exists");
+                return ;
+            }else{
+                outputFile.createNewFile();
             }
-            outputFile.createNewFile();
-            // outputFile = File.createTempFile("demo", ".mp4", outputDir);
+            //outputFile.createNewFile();
+            //outputFile = File.createTempFile("demo", ".mp4", outputDir);
+
             outputFile.setReadable(true, false);
             OutputStream out = new FileOutputStream(outputFile);
             byte[] buf = new byte[1024];
@@ -181,7 +197,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
                 welcomeActivity();
             } else {
                 dialog.dismiss();
-                buildAlertDialog();
+                buildAlertDialog("Error validating User","Invalid username/password");
 
             }
 
@@ -189,12 +205,12 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     }
 
 
-    public void buildAlertDialog() {
+    public static void buildAlertDialog(String title,String message) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
-         alertDialogBuilder.setTitle("User verification failed");
+                activity);
+         alertDialogBuilder.setTitle(title);
         alertDialogBuilder
-                .setMessage("Invalid username or pasword")
+                .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -217,12 +233,9 @@ public class Login_Activity extends Activity implements View.OnClickListener {
             System.out.println("String " + String.valueOf(json) + " " + json.getClass());
             JSONObject object = new JSONObject(json);
             if (object.getString("success").equalsIgnoreCase("1")) {
-                ParameterFile.userID = Integer.parseInt(object.getString("userID"));
-                ParameterFile.sessionID = Integer.parseInt(object.getString("sessionID"));
-                ParameterFile.positiveColor = object.getString("positiveColor");
-                ParameterFile.negativeColor = object.getString("negativeColor");
-                ParameterFile.totalGames = Integer.parseInt(object.getString("totalGames"));
-                ParameterFile.time = Integer.parseInt(object.getString("time"));
+
+                new FetchParameter().execute();
+
                 return true;
             } else
                 return false;

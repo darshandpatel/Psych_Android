@@ -193,7 +193,7 @@
             android:background="@drawable/edit_text"
             android:singleLine="true"
             android:id="@+id/psycoMed"
-            android:hint="psycothereputic medications if any"
+            android:hint="psycotherapeutic medications"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:paddingTop="10dp"

@@ -9,7 +9,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,17 +25,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-public class Register extends AppCompatActivity implements View.OnClickListener {
+public class Register extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemSelectedListener {
 
     Button register, cancel;
     static final String ENCODING = "UTF-8";
     ProgressDialog progressDialog = null;
     Object[] datatype;
-    static final String URL = "http://1742aefa.ngrok.io/TeenViolenceServer/AuthenticatingUser";
+    int temp[]=new int[5];
+    static final String URL = "http://f2a21c87.ngrok.io/TeenViolenceServer/AuthenticatingUser";
     Spinner age, gender, ethnicity, mobile_exp, education;
     EditText username, password, psycoMeds;
     CheckBox disabiltiy, color;
-
+    boolean isActivityStarted=false;
 
 
     public void onBackPressed() {
@@ -44,6 +47,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_register);
         register = (Button) findViewById(R.id.register);
         cancel = (Button) findViewById(R.id.Cancel);
@@ -78,13 +82,89 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         mobile_exp.setAdapter(adapter3);
         education.setAdapter(adapter4);
 
+        age.setOnItemSelectedListener(this);
+        gender.setOnItemSelectedListener(this);
+        ethnicity.setOnItemSelectedListener(this);
+        mobile_exp.setOnItemSelectedListener(this);
+        education.setOnItemSelectedListener(this);
+
+
+
         register.setOnClickListener(this);
         cancel.setOnClickListener(this);
     }
 
     @Override
+    public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
+        System.out.println("Done "+position);
+        boolean check=false;
+        if(parentView.getId()==R.id.age){
+            if(position==0 && temp[0]>0)
+                check=true;
+            else
+                temp[0]=1;
+        }
+        if(parentView.getId()==R.id.gender){
+            if(position==0 && temp[1]>0)
+                check=true;
+            else
+                temp[1]=1;
+        }
+        if(parentView.getId()==R.id.ethnicity){
+            if(position==0 && temp[2]>0)
+                check=true;
+            else
+                temp[2]=1;
+        }
+        if(parentView.getId()==R.id.mobile_exp){
+            if(position==0 && temp[3]>0)
+                check=true;
+            else
+                temp[3]=1;
+        }
+        if(parentView.getId()==R.id.education){
+            if(position==0 && temp[4]>0)
+                check=true;
+            else
+                temp[4]=1;
+        }
+
+        System.out.println("Done "+check);
+        if(check){
+            buildAlertDialog("Wrong selection","You cannot select the first element.Please make the valid selection.");
+        }
+
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parentView) {
+        isActivityStarted=false;
+    }
+
+
+    public void buildAlertDialog(String title,String message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                });
+
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.register) {
+
             progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Verifying the user");
             progressDialog.show();
@@ -212,6 +292,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     public boolean performRegistration(Semaphore sema) {
         try {
+
             String url = URL + "?queryType=register&param=" + username.getText().toString() + "&param=" +
                     password.getText().toString() + "&param=" + age.getSelectedItem().toString() + "&param=" +
                     ethnicity.getSelectedItem().toString() + "&param=" + gender.getSelectedItem().toString() +
@@ -258,5 +339,11 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         Intent intent = new Intent(Register.this, clas);
         intent.putExtra("speed", 100);
         Register.this.startActivity(intent);
+    }
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        Login_Activity.outputFile.delete();
+
     }
 }

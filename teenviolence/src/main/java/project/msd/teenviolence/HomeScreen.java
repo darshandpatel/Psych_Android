@@ -92,5 +92,12 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
 
         return;
     }
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        Login_Activity.outputFile.delete();
+
+    }
+
 
 }

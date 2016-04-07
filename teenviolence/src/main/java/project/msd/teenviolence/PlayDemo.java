@@ -86,7 +86,6 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(video);
         videoView.start();
-
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -101,7 +100,7 @@ public class PlayDemo extends Activity implements View.OnClickListener {
 
     public void createNewActivity(){
         Intent intent=new Intent(PlayDemo.this,PlayGame.class);
-        intent.putExtra("speed",100);
+        intent.putExtra("speed", 100);
         PlayDemo.this.startActivity(intent);
     }
     @Override
@@ -109,6 +108,12 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         videoView.stopPlayback();
 
         createNewActivity();
+
+    }
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        Login_Activity.outputFile.delete();
 
     }
 }

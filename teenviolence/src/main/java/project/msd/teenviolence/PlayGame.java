@@ -72,8 +72,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         linearLayout.setBackgroundColor(Color.rgb(12, 12, 12));
         view = (ImageView) findViewById(R.id.imageView);
         detector = new GestureDetector(this, this);
-        new Thread(){public void run(){
-        startPlayingTheGame();}}.start();
+
+        startPlayingTheGame();
         loadAnimaions();
     }
 
@@ -95,12 +95,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
     public void startPlayingTheGame() {
 
-        if(testSubjectResults.size()<ParameterFile.totalGames){
+        new Thread(){public  void run() {
+            if (testSubjectResults.size() < ParameterFile.totalGames) {
 
-           Login_Activity.fetchImagesExecutorService();
-        }
+                Login_Activity.fetchImagesExecutorService();
+            }
 
-        paintImages();
+            paintImages();
+        }}.start();;
 
 
     }
@@ -227,6 +229,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             totalTimeTaken+=result.time;
             System.out.println("Surinder feedback: "+result.isAttempted+" "+result.time+" "+result.isPositive+" "+result.imageName+" "+result.backgroundColor);
         }
+
+        testSubjectResults = new ArrayList<TestSubjectResults>(); ;
+        new FetchParameter().execute();
+        new Thread(){public  void run() {
+            if (testSubjectResults.size() < ParameterFile.totalGames) {
+
+                Login_Activity.fetchImagesExecutorService();
+            }}}.start();
         Intent intent=new Intent(PlayGame.this,HomeScreen.class);
         intent.putExtra("text","Thank you for playing.");
         PlayGame.this.startActivity(intent);
@@ -327,5 +337,16 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         alertDialog.show();
     }
 
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        Login_Activity.outputFile.delete();
+
+    }
+
+    public void onBackPressed() {
+
+        return;
+    }
 
 }

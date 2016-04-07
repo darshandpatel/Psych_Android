@@ -242,6 +242,13 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
     }
 
+    protected void onDestroy(){
+        super.onDestroy();
+        System.out.println("Done on Destroy");
+        Login_Activity.outputFile.delete();
+
+    }
+
 
 
 }

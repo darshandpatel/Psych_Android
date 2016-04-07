@@ -20,7 +20,7 @@ import java.util.concurrent.Semaphore;
  */
 public class BuildInstructions {
 
-    static final String URL="http://1742aefa.ngrok.io/TeenViolenceServer/FetchParameters?queryType=instructions";
+    static final String URL="http://f2a21c87.ngrok.io/TeenViolenceServer/FetchParameters?queryType=instructions";
     Context context=null;
     Semaphore semaphore=null;
     String[] instructions=null;
