@@ -183,12 +183,12 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         protected Boolean doInBackground(ArrayList<String>... params) {
             String userName = params[0].get(0);
             String passowrd = params[0].get(1);
-            return true;
-            /*
+
+
             if(isValidUsername(userName)){
                 return isCorrectLogin(userName,passowrd);
             }
-            return false;*/
+            return false;
         }
 
         protected void onPostExecute(Boolean check) {
@@ -233,7 +233,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
             System.out.println("String " + String.valueOf(json) + " " + json.getClass());
             JSONObject object = new JSONObject(json);
             if (object.getString("success").equalsIgnoreCase("1")) {
-
+                ParameterFile.userID = Integer.parseInt(object.getString("userID"));
                 new FetchParameter().execute();
 
                 return true;

@@ -11,11 +11,11 @@ import java.io.InputStream;
  */
 public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
 
-    final String URL="";
+    final String URL="http://f2a21c87.ngrok.io/TeenViolenceServer/parameter/InitialParameter";
     @Override
     protected JSONObject doInBackground(Void... param){
         try{
-            InputStream stream=BuildConnections.buildConnection(URL);
+            InputStream stream=BuildConnections.buildConnection(URL+"?userID="+ParameterFile.userID);
             JSONObject object=BuildConnections.getJSOnObject(stream);
             return object;
         }catch (Exception e){
@@ -30,12 +30,12 @@ public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
             return;
         }
         try {
-            ParameterFile.userID = Integer.parseInt(object.getString("userID"));
+
             ParameterFile.sessionID = Integer.parseInt(object.getString("sessionID"));
             ParameterFile.positiveColor = object.getString("positiveColor");
             ParameterFile.negativeColor = object.getString("negativeColor");
             ParameterFile.totalGames = Integer.parseInt(object.getString("totalGames"));
-            ParameterFile.time = Integer.parseInt(object.getString("time"));
+            ParameterFile.time = Integer.parseInt(object.getString("timeInterval"));
         }catch (Exception e){
             Login_Activity.buildAlertDialog("Error fetching Parameter", e.getMessage()+"\nPlease retry.");
         }

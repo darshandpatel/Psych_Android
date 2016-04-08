@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.concurrent.Semaphore;
 
 public class Questions extends AppCompatActivity implements View.OnClickListener {
@@ -35,7 +36,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     TextView[] questionsViews;
     TextView[] expertViews;
     SeekBar[] bars;
-    final static String QUESTION_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/Question";
+    final static String QUESTION_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
     static Questions questions = null;
     Semaphore semaphore = new Semaphore(0, true);
 
@@ -124,7 +125,9 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         protected String[] doInBackground(Void... parms) {
             String questions[] = null;
             try {
-                InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?queryType=fetchQuestions");
+                InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "" +
+                        "?requestType=request&questionSession="+ParameterFile.QuestionSession);
+
                 JSONObject object = BuildConnections.getJSOnObject(stream);
                 JSONArray array = object.getJSONArray("questions");
                 questions = new String[array.length()];
@@ -157,7 +160,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             InputStream stream = null;
             try {
                 String feedback = parms[0];
-                stream = BuildConnections.buildConnection(QUESTION_URL + "?queryType=feedback&feedbackResult=" + feedback);
+                stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -210,18 +213,17 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
     public String getResults() {
         String result = "{\"feedback\":[";
+        String questions="";
+        String answers="";
+        for (int i = 0; i < 12; i++) {
+            questions+="&question="+questionsViews[i].getText().toString();
+            answers+="&answer="+bars[i].getProgress();
 
-        for (int i = 0; i < 5; i++) {
-            String jsonPart = "{\"question\":\"" + questionsViews[i].getText().toString() + "\",\"answer\":\"" + bars[i].getProgress() + "\"},";
-            result += jsonPart;
         }
-        for (int i = 5; i < 9; i++) {
-            String jsonPart = "{\"question\":\"" + questionsViews[i].getText().toString() + "\",\"answer\":\"" + edits[i - 5].getText() + "\"},";
-            result += jsonPart;
-        }
-        String jsonPart = "{\"question\":\"" + questionsViews[9].getText().toString() + "\",\"answer\":\"" + edits[4].getText() + "\"}]";
-        result += jsonPart;
-        return result;
+
+
+        return questions+answers+"&userID="+ParameterFile.userID+"&sessionID="+ParameterFile.sessionID+
+                "sessionDate"+(new Date()).toString();
 
     }
 

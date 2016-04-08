@@ -32,7 +32,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     ProgressDialog progressDialog = null;
     Object[] datatype;
     int temp[]=new int[5];
-    static final String URL = "http://f2a21c87.ngrok.io/TeenViolenceServer/AuthenticatingUser";
+    static final String URL = "http://f2a21c87.ngrok.io/TeenViolenceServer/Register";
     Spinner age, gender, ethnicity, mobile_exp, education;
     EditText username, password, psycoMeds;
     CheckBox disabiltiy, color;
@@ -293,11 +293,11 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     public boolean performRegistration(Semaphore sema) {
         try {
 
-            String url = URL + "?queryType=register&param=" + username.getText().toString() + "&param=" +
+            String url = URL + "?&param=" + username.getText().toString() + "&param=" +
                     password.getText().toString() + "&param=" + age.getSelectedItem().toString() + "&param=" +
                     ethnicity.getSelectedItem().toString() + "&param=" + gender.getSelectedItem().toString() +
                     "&param=" + disabiltiy.isChecked() + "&param=" + mobile_exp.getSelectedItem().toString() +
-                    "&param=" + psycoMeds.getText().toString() + "&param=" + color.isChecked();
+                    "&param=" + psycoMeds.getText().toString() + "&param=" + color.isChecked()+ "&param=" + education.getSelectedItem();
 
 
             InputStream stream = BuildConnections.buildConnection(url);

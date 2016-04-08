@@ -11,6 +11,7 @@ public class ParameterFile implements java.io.Serializable {
     static String positiveColor="";
     static String negativeColor="";
     static boolean isGamePlayed=false;
+    static int QuestionSession=0;
 
 
 

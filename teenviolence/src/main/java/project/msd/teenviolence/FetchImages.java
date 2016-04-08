@@ -62,16 +62,18 @@ public class FetchImages implements Runnable {
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
-        Bitmap image = BitmapFactory.decodeStream(stream, null, options);
-        TestSubjectResults temp = new TestSubjectResults();
-        temp.backgroundColor = color;
-        temp.image = image;
-        temp.isPositive = isPositive;
-        //temp.imageX=image.getWidth();
-        //temp.imageY=image.getHeight();
-        temp.time = ParameterFile.time;
-        synchronized (PlayGame.testSubjectResults) {
-            PlayGame.testSubjectResults.add(temp);
+        if(stream!=null) {
+            Bitmap image = BitmapFactory.decodeStream(stream, null, options);
+            TestSubjectResults temp = new TestSubjectResults();
+            temp.backgroundColor = color;
+            temp.image = image;
+            temp.isPositive = isPositive;
+            //temp.imageX=image.getWidth();
+            //temp.imageY=image.getHeight();
+            temp.time = ParameterFile.time;
+            synchronized (PlayGame.testSubjectResults) {
+                PlayGame.testSubjectResults.add(temp);
+            }
         }
 
     }

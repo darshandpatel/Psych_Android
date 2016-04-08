@@ -224,10 +224,12 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     public void buildReport(){
         totalQuestions=testSubjectResults.size();
         ParameterFile.isGamePlayed=true;
+        SendFeedback feedback=new SendFeedback();
         for(TestSubjectResults result:testSubjectResults){
             getCorrect_IncorrectResponses(result);
             totalTimeTaken+=result.time;
-            System.out.println("Surinder feedback: "+result.isAttempted+" "+result.time+" "+result.isPositive+" "+result.imageName+" "+result.backgroundColor);
+            feedback.execute(result.isAttempted+"",result.time+"",result.isPositive+"",result.backgroundColor,result.responseAccurate+"");
+            System.out.println("Surinder feedback: " + result.isAttempted + " " + result.time + " " + result.isPositive + " " + result.imageName + " " + result.backgroundColor);
         }
 
         testSubjectResults = new ArrayList<TestSubjectResults>(); ;
