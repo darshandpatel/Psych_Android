@@ -47,7 +47,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     static File outputFile = null;
     static Login_Activity activity = null;
     //static String ADDRESS="http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
-    static String ADDRESS = "http://f2a21c87.ngrok.io/TeenViolenceServer/";
+    static String ADDRESS = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
 
 
     static boolean isDownloadComplete = false;
@@ -73,7 +73,9 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         loginButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
 
-        new DownloadVideo().execute();
+
+
+
     }
 
 
@@ -89,69 +91,12 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         return;
     }
 
-    public static void fetchImagesExecutorService() {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        int counter = PlayGame.testSubjectResults.size();
-        while (counter <= ParameterFile.totalGames) {
-            if (PlayGame.testSubjectResults.size() <= ParameterFile.totalGames) {
-                FetchImages fetchImages = new FetchImages();
-                executor.execute(fetchImages);
-                System.out.println("Images executed");
-            }
-            counter++;
-
-        }
-        executor.shutdown();
-
-    }
 
 
-    class DownloadVideo extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... param) {
-            downloadDemoVideo();
-            fetchImagesExecutorService();
-            return null;
-        }
-    }
-
-    public static void downloadDemoVideo() {
 
 
-        try {
-            isDownloadStarted = true;
-            InputStream stream = BuildConnections.buildConnection(DEMOURL + "?queryType=video");
-            File outputDir = Environment.getExternalStorageDirectory(); // context being the Activity pointer
-            //outputFile = new File(outputDir + "/demo.mp4");
 
-            outputFile=new File(outputDir.getPath()+"/demo.mp4");
-            if(outputFile.exists()){
-                isDownloadComplete = true;
-                System.out.println("Done Already exists");
-                return ;
-            }else{
-                outputFile.createNewFile();
-            }
-            //outputFile.createNewFile();
-            //outputFile = File.createTempFile("demo", ".mp4", outputDir);
 
-            outputFile.setReadable(true, false);
-            OutputStream out = new FileOutputStream(outputFile);
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = stream.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            out.flush();
-            out.close();
-            stream.close();
-            isDownloadComplete = true;
-            System.out.println("Done " + outputFile.getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -172,7 +117,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     }
 
     public static boolean isValidUsername(String username) {
-        Pattern p = Pattern.compile("^[a-z0-9_-]{5,15}$");
+        Pattern p = Pattern.compile("^[a-z0-9_-]{1,15}$");
         Matcher matcher = p.matcher(username);
         return matcher.matches();
     }
@@ -183,10 +128,8 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         protected Boolean doInBackground(ArrayList<String>... params) {
             String userName = params[0].get(0);
             String passowrd = params[0].get(1);
-
-
             if(isValidUsername(userName)){
-                return isCorrectLogin(userName,passowrd);
+                return isCorrectLogin(Register.encodeString(userName),Register.encodeString(passowrd));
             }
             return false;
         }
@@ -228,12 +171,14 @@ public class Login_Activity extends Activity implements View.OnClickListener {
 
     public boolean isCorrectLogin(String userName, String password) {
         try {
-            InputStream stream = BuildConnections.buildConnection(URL + "&username=" + userName + "&passsword=" + password);
+
+            System.out.println(userName+" "+password);
+            InputStream stream = BuildConnections.buildConnection(URL + "&username=" + userName + "&password=" + password);
             String json = IOUtils.toString(stream, ENCODING);
             System.out.println("String " + String.valueOf(json) + " " + json.getClass());
             JSONObject object = new JSONObject(json);
             if (object.getString("success").equalsIgnoreCase("1")) {
-                ParameterFile.userID = Integer.parseInt(object.getString("userID"));
+                ParameterFile.userID = Integer.parseInt(object.getString("userId"));
                 new FetchParameter().execute();
 
                 return true;

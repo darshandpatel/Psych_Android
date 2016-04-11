@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,11 +20,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 
 public class Register extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemSelectedListener {
 
@@ -32,7 +35,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     ProgressDialog progressDialog = null;
     Object[] datatype;
     int temp[]=new int[5];
-    static final String URL = "http://f2a21c87.ngrok.io/TeenViolenceServer/Register";
+    static final String URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/registration/Register";
     Spinner age, gender, ethnicity, mobile_exp, education;
     EditText username, password, psycoMeds;
     CheckBox disabiltiy, color;
@@ -208,16 +211,17 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
         protected String doInBackground(Void... parms) {
             InputStream stream = null;
             String agreement = null;
-            /*
+
             try {
                 stream = BuildConnections.buildConnection(URL + "?queryType=getAgreement");
-                JSONObject object = BuildConnections.getJSOnObject(stream);
-                agreement = object.getString("agreement");
+                agreement = IOUtils.toString(stream,"UTF-8");
+
+                return agreement;
             } catch (Exception e) {
                 e.printStackTrace();
-            }*/
+            }
 
-            return "";
+            return null;
         }
 
         protected void onPostExecute(String aggrement) {
@@ -257,9 +261,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
 
 
                                 try {
-                                    boolean success = true;
-                                    //performRegistration(semaphore);
-                                    //semaphore.acquire();
+                                    boolean success = performRegistration(semaphore);
+                                    semaphore.acquire();
                                     if (success) {
                                         progressDialog.dismiss();
                                         createNextActivity(HomeScreen.class);
@@ -290,14 +293,24 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     }
 
 
+    public static String encodeString(String rawString){
+        byte array[]=rawString.getBytes();
+        String encodedString=Base64.encodeToString(array,Base64.URL_SAFE|Base64.NO_WRAP);
+        return encodedString;
+    }
+
     public boolean performRegistration(Semaphore sema) {
         try {
 
-            String url = URL + "?&param=" + username.getText().toString() + "&param=" +
-                    password.getText().toString() + "&param=" + age.getSelectedItem().toString() + "&param=" +
-                    ethnicity.getSelectedItem().toString() + "&param=" + gender.getSelectedItem().toString() +
-                    "&param=" + disabiltiy.isChecked() + "&param=" + mobile_exp.getSelectedItem().toString() +
-                    "&param=" + psycoMeds.getText().toString() + "&param=" + color.isChecked()+ "&param=" + education.getSelectedItem();
+            byte[] b=new byte[10];
+            Base64.encodeToString(b,Base64.URL_SAFE|Base64.NO_WRAP);
+            String url = URL + "?queryType=register&param=" + encodeString(username.getText().toString()) + "&param=" +
+                    encodeString(password.getText().toString()) + "&param=" + (age.getSelectedItem().toString()) + "&param=" +
+                    encodeString(ethnicity.getSelectedItem().toString()) + "&param=" + encodeString(gender.getSelectedItem().toString()) +
+                    "&param=" + encodeString(disabiltiy.isChecked()+"") + "&param=" + encodeString(mobile_exp.getSelectedItem().toString()) +
+                    "&param=" + encodeString(psycoMeds.getText().toString()) + "&param=" + encodeString(color.isChecked()+"")+ "&param=" + encodeString(education.getSelectedItem().toString());
+
+            System.out.println("Done "+url);
 
 
             InputStream stream = BuildConnections.buildConnection(url);

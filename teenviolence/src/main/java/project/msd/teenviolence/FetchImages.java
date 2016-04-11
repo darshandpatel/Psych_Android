@@ -23,8 +23,8 @@ public class FetchImages implements Runnable {
 
     static RequestQueue requestQueue = null;
     static Semaphore semaphore = new Semaphore(0, true);
-    final static String POSITIVE_URL = "http://f2a21c87.ngrok.io/TeenViolenceServer/ImageFetcher";
-    final static String NEGATIVE_URL = "http://f2a21c87.ngrok.io/TeenViolenceServer/ImageFetcher";
+    final static String POSITIVE_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
+    final static String NEGATIVE_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
     final static Random random = new Random();
 
 
@@ -47,10 +47,10 @@ public class FetchImages implements Runnable {
         String urlToFetchImage = null;
         if (isPositive) {
             urlToFetchImage = POSITIVE_URL + "?param1=positive";
-            color = "green";
+            color = ParameterFile.positiveColor;
         } else {
             urlToFetchImage = NEGATIVE_URL + "?param1=negative";
-            color = "red";
+            color = ParameterFile.negativeColor;
         }
         InputStream stream = null;
         try {
@@ -62,17 +62,20 @@ public class FetchImages implements Runnable {
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
-        if(stream!=null) {
+        synchronized (PlayGame.testSubjectResults) {
+        if(stream!=null && PlayGame.testSubjectResults.size()<=ParameterFile.totalGames ) {
             Bitmap image = BitmapFactory.decodeStream(stream, null, options);
             TestSubjectResults temp = new TestSubjectResults();
+
             temp.backgroundColor = color;
             temp.image = image;
             temp.isPositive = isPositive;
             //temp.imageX=image.getWidth();
             //temp.imageY=image.getHeight();
             temp.time = ParameterFile.time;
-            synchronized (PlayGame.testSubjectResults) {
+
                 PlayGame.testSubjectResults.add(temp);
+                System.out.println("Size added to image" + PlayGame.testSubjectResults.size());
             }
         }
 

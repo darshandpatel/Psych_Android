@@ -2,14 +2,18 @@ package project.msd.teenviolence;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.view.Gravity;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -32,148 +36,161 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
     Button button = null;
     LinearLayout layout = null;
-    EditText[] edits;
+    SeekBar[] edits;
     TextView[] questionsViews;
-    TextView[] expertViews;
-    SeekBar[] bars;
+
     final static String QUESTION_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
     static Questions questions = null;
     Semaphore semaphore = new Semaphore(0, true);
-
+    ProgressDialog progressDialog=null;
     boolean demoPlayed = true;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        questionsViews = new TextView[10];
-        expertViews = new TextView[5];
-        bars = new SeekBar[5];
-        edits = new EditText[5];
         setContentView(R.layout.activity_questions);
+        semaphore=new Semaphore(0,true);
+        layout=(LinearLayout)findViewById(R.id.scrol);
         Intent intent = new Intent();
         demoPlayed = intent.getBooleanExtra("demoNeeded", true);
-        // layout=(LinearLayout)findViewById(R.id.scrol);
-
-
         new fetchQuestions().execute();
-        initialiseViews();
-        button = (Button) findViewById(R.id.submit);
-        button.setOnClickListener(this);
-
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Please wait while questions are being fetched");
+        progressDialog.show();;
     }
 
-    public void initialiseViews() {
-        for (int i = 1; i <= 5; i++) {
-            intialisQuesitons(i);
-            initialiseBars(i);
+    class fetchQuestions extends AsyncTask<String,Void,String[]>{
+
+        protected String[] doInBackground(String... parms){
+            String questions[]=null;
+            try{
+            InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "" +
+                    "?requestType=request&questionSession="+ParameterFile.QuestionSession);
+
+            JSONObject object = BuildConnections.getJSOnObject(stream);
+            JSONArray array = object.getJSONArray("questions");
+            questions = new String[array.length()];
+            for (int i = 0; i < array.length(); i++) {
+                questions[i] = array.getJSONObject(i).getString("question");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        for (int i = 6; i <= 10; i++) {
-            intialisQuesitons(i);
-            int tID2 = getResources().getIdentifier("edit" + (i - 5), "id", "project.msd.teenviolence");
-            EditText edit = (EditText) findViewById(tID2);
-            edits[i - 6] = edit;
+        return questions;
         }
-    }
-
-    public void intialisQuesitons(int i) {
-        int tID = getResources().getIdentifier("q" + i, "id", "project.msd.teenviolence");
-        TextView view = (TextView) findViewById(tID);
-        questionsViews[i - 1] = view;
-    }
-
-    public void initialiseBars(int i) {
-        int seekID = getResources().getIdentifier("seekBar" + i, "id", "project.msd.teenviolence");
-        SeekBar seekBar = (SeekBar) findViewById(seekID);
-        int tID2 = getResources().getIdentifier("seekBar" + i + "TextView", "id", "project.msd.teenviolence");
-        TextView view2 = (TextView) findViewById(tID2);
-        setSeekBarChangedListeners(seekBar, view2);
-        expertViews[i - 1] = view2;
-        bars[i - 1] = seekBar;
-    }
-
-    public void setSeekBarChangedListeners(SeekBar seekBar, final TextView textView) {
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progress = 0;
-
-            public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
-                progress = progresValue;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (progress < 2) {
-                    textView.setText("Denied");
-                }
-                if (progress >= 2 && progress < 4) {
-                    textView.setText("Not sure");
-                }
-                if (progress >= 4) {
-                    textView.setText("Extremely confident");
-                }
-
-            }
-        });
-
-    }
-
-    class fetchQuestions extends AsyncTask<Void, Void, String[]> {
-
-        protected String[] doInBackground(Void... parms) {
-            String questions[] = null;
-            try {
-                InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "" +
-                        "?requestType=request&questionSession="+ParameterFile.QuestionSession);
-
-                JSONObject object = BuildConnections.getJSOnObject(stream);
-                JSONArray array = object.getJSONArray("questions");
-                questions = new String[array.length()];
-                for (int i = 0; i < array.length(); i++) {
-                    questions[i] = array.getJSONObject(i).getString("question");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return questions;
-        }
-
-        protected void onPostExecute(String[] questions) {
-            populateQuestions(questions);
+        protected void onPostExecute(String questions[]){
+            displayQuestions(questions);
             semaphore.release();
-
+            displayButton();
+            progressDialog.dismiss();
         }
     }
 
+    public void displayButton(){
+        LinearLayout lLayout=new LinearLayout(this);
+        lLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-    public void populateQuestions(String[] questions) {
-        for (int i = 0; i < 10; i++) {
-            questionsViews[i].setText(i + ") " + questions[i]);
-        }
+
+        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lparams.weight=1;
+
+        button=new Button(this);
+        button.setText("Continue");
+        button.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+        lLayout.addView(button);
+        button.setOnClickListener(this);
+        layout.addView(lLayout);
+
     }
 
-    class SendFeedback extends AsyncTask<String, Void, InputStream> {
+    @Override
+    public void onClick(View view){
 
-        protected InputStream doInBackground(String... parms) {
-            InputStream stream = null;
+        new SendFeedback().execute(getResults());
+        try {
+            semaphore.acquire();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Intent intent=new Intent(Questions.this,PlayDemo.class);
+        intent.putExtra("speed",100);
+        Questions.this.startActivity(intent);
+    }
+
+
+    public void displayQuestions(String questions[]){
+        layout.removeAllViews();
+        edits=new SeekBar[questions.length];
+        questionsViews=new TextView[questions.length];
+        LinearLayout lLayout=null;
+        for(int i=0;i<questions.length;i++){
+            lLayout=new LinearLayout(this);
+            lLayout.setOrientation(LinearLayout.VERTICAL);
+
+
+            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lparams.weight=1;
+            lparams.setMargins(0,10,0,0);
+            TextView tView=buildTextView(i,questions[i],lparams);
+
+            SeekBar eView=buildEditView(lparams);
+
+
+            lLayout.addView(tView);
+            lLayout.addView(eView);
+            edits[i]=eView;
+            questionsViews[i]=tView;
+            layout.addView(lLayout);
+        }
+
+
+
+    }
+
+    public SeekBar buildEditView(ViewGroup.LayoutParams layoutParams){
+        SeekBar bar=new SeekBar(this);
+        bar.setMax(5);
+        bar.setBackground(getDrawable(R.drawable.edit_text));
+        bar.setLayoutParams(layoutParams);
+        return bar;
+    }
+    public TextView buildTextView(int i,String question,ViewGroup.LayoutParams lparams){
+        TextView edit_text = new TextView(this);
+        edit_text.canScrollHorizontally(0);
+        edit_text.setTextColor(Color.WHITE);
+        edit_text.setMaxLines(100);
+        edit_text.setLayoutParams(lparams);
+        edit_text.setText(i+1 + ") " + question);
+        return edit_text;
+    }
+
+
+ class SendFeedback extends AsyncTask<String, Void, JSONObject> {
+
+        protected JSONObject doInBackground(String... parms) {
+            JSONObject object = null;
             try {
+
                 String feedback = parms[0];
-                stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
+                System.out.println("feedback "+feedback);
+
+              InputStream  stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
+                object = BuildConnections.getJSOnObject(stream);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return stream;
+            return object;
 
         }
 
-        protected void onPostExecute(InputStream stream) {
-            JSONObject jsonObject = BuildConnections.getJSOnObject(stream);
+        protected void onPostExecute(JSONObject jsonObject) {
+
             try {
 
-                String val = jsonObject.getString("sucess");
-                if (val.equalsIgnoreCase("1")) {
+                String val = jsonObject.getString("save");
+                if (val.equalsIgnoreCase("successful")) {
                     if (demoPlayed) {
                         startNewActivity(PlayDemo.class);
                     } else {
@@ -215,15 +232,17 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         String result = "{\"feedback\":[";
         String questions="";
         String answers="";
-        for (int i = 0; i < 12; i++) {
-            questions+="&question="+questionsViews[i].getText().toString();
-            answers+="&answer="+bars[i].getProgress();
+        for (int i = 0; i < questionsViews.length; i++) {
+            String val=questionsViews[i].getText().toString().trim();
+            System.out.println("question "+val);
+            questions+="&question="+val.substring(val.indexOf(")")+1,val.length());
+            answers+="&answer="+edits[i].getProgress();
 
         }
 
 
         return questions+answers+"&userID="+ParameterFile.userID+"&sessionID="+ParameterFile.sessionID+
-                "sessionDate"+(new Date()).toString();
+                "&sessionDate="+(new Date()).toString()+"&questionSession="+ParameterFile.QuestionSession;
 
     }
 
@@ -232,17 +251,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         return;
     }
 
-    @Override
-    public void onClick(View view) {
-        new SendFeedback().execute(getResults());
-        try {
-            semaphore.acquire();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-
-    }
 
     protected void onDestroy(){
         super.onDestroy();

@@ -35,6 +35,8 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
         game.setOnClickListener(this);
         MenuPouplateItems.questions = this;
 
+        System.out.println(ParameterFile.totalGames);
+
     }
 
 

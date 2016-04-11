@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
@@ -20,6 +21,9 @@ public class BuildConnections {
 
     public static InputStream buildConnection(String URL) throws IOException {
         try{
+            URL=URL.replaceAll(" ","%20");
+            System.out.println("URL "+URL);
+
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet httpget = new HttpGet(URL);
         HttpResponse response= (httpclient.execute(httpget));

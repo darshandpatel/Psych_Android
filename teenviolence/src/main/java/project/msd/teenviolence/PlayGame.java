@@ -45,20 +45,33 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     static boolean gameOver = false;
     static boolean paintInPostExecuteNeeded = true;
     GestureDetector detector = null;
+    static boolean checkImagePainted=false;
 
     ImageView view = null;
     PlayGame that = null;
-    long startTime = 0, endTime = 0;
-    int correctResponses = 0;
+    static long startTime = 0, endTime = 0;
+    static int correctResponses = 0;
     static ArrayList<TestSubjectResults> testSubjectResults = new ArrayList<TestSubjectResults>(); ;
-
+    static Thread thread=null;
     ProgressDialog dialog = null;
     private Animation animZoomIn = null;
     private Animation animZoomOut = null, animNormal = null;
     LinearLayout linearLayout;
+    final Semaphore semaphore=new Semaphore(0,true);
 
+    public void initialiseValues(){
+        totalCorrectResponse=0;
+        totalwrongResponse=0;
+        unattemptedQuestions=0;
+        totalTimeTaken=0;
+        totalQuestions=0;
+        nextImageNeeded = false;
+        gameOver = false;
+        paintInPostExecuteNeeded = true;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initialiseValues();
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -72,9 +85,10 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         linearLayout.setBackgroundColor(Color.rgb(12, 12, 12));
         view = (ImageView) findViewById(R.id.imageView);
         detector = new GestureDetector(this, this);
-
-        startPlayingTheGame();
         loadAnimaions();
+        startPlayingTheGame();
+
+
     }
 
     public void loadAnimaions(){
@@ -84,6 +98,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         animZoomIn.setAnimationListener(this);
         animZoomOut.setAnimationListener(this);
     }
+
+
 
     public void fingerSwipedUp() {
         view.startAnimation(animZoomIn);
@@ -95,70 +111,98 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
     public void startPlayingTheGame() {
 
-        new Thread(){public  void run() {
-            if (testSubjectResults.size() < ParameterFile.totalGames) {
+        thread =new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-                Login_Activity.fetchImagesExecutorService();
+                paintImages();
+
             }
+        });
+        thread.start();
 
-            paintImages();
-        }}.start();;
+
 
 
     }
 
 
-    public void paintNextImage() {
+    synchronized public void paintNextImage(Semaphore sema) {
+        final Semaphore semaphore=sema;
+        if(!gameOver) {
+            System.out.println("Games " + ParameterFile.totalGames + " \nValue " + testSubjectResults.size());
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    view.startAnimation(animNormal);
 
-        runOnUiThread(new Runnable() {
-            public void run() {
-                view.startAnimation(animNormal);
-                if(testSubjectResults.get(nextCounter).isPositive){
-                    linearLayout.setBackgroundColor(Color.GREEN);
-                }else{
-                    linearLayout.setBackgroundColor(Color.RED);
+                    if (testSubjectResults.get(nextCounter).isPositive) {
+                        if (testSubjectResults.get(nextCounter).backgroundColor.equalsIgnoreCase("#"))
+                            testSubjectResults.get(nextCounter).backgroundColor = ParameterFile.positiveColor;
+
+                        linearLayout.setBackgroundColor(Color.parseColor(testSubjectResults.get(nextCounter).backgroundColor));
+                    } else {
+                        if (testSubjectResults.get(nextCounter).backgroundColor.equalsIgnoreCase("#"))
+                            testSubjectResults.get(nextCounter).backgroundColor = ParameterFile.negativeColor;
+                        linearLayout.setBackgroundColor(Color.parseColor(testSubjectResults.get(nextCounter).backgroundColor));
+                    }
+                    view.setImageBitmap(testSubjectResults.get(nextCounter).image);
+                    System.out.println("Called classes in runUI" + nextCounter);
+                    nextCounter++;
+                    nextImageNeeded = false;
+                    dialog.dismiss();
+
+                    paintInPostExecuteNeeded = false;
+                    startTime = System.nanoTime();
+                    checkImagePainted = true;
+
                 }
-                view.setImageBitmap(testSubjectResults.get(nextCounter).image);
-            }
-        });
 
-        nextCounter++;
-        nextImageNeeded = false;
-        dialog.dismiss();
-        paintInPostExecuteNeeded=false;
-        startTime = System.nanoTime();
+            });
+
+
+        }
     }
 
 
     public void paintImages() {
+
         while (!gameOver) {
+
             if (nextCounter>= ParameterFile.totalGames) {
                 gameOver=true;
-                
+                System.out.println("Called classes in paintImages"+nextCounter);
                 buildReport();
                 break;
             }
 
-
-
-            if((System.nanoTime()-startTime)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
-                System.out.println("Time is greater");
-                unattemptedQuestions++;
-                testSubjectResults.get(nextCounter-1).isAttempted=false;
-                nextImageNeeded=true;
-            }
-
             if(nextImageNeeded && ((nextCounter) > (testSubjectResults.size() - 1))){
+                System.out.println("NExt Image needed "+nextCounter+" "+testSubjectResults.size());
                 paintInPostExecuteNeeded=true;
                 dialog.dismiss();
             }
-            if ((nextCounter==0 && testSubjectResults.size()>1 )|| nextImageNeeded) {
-                paintNextImage();
+            if (((nextCounter==0 && testSubjectResults.size()>1 )|| nextImageNeeded)) {
+               System.out.println("Called in if loop "+nextCounter);
+                paintNextImage(semaphore);
+                try{
+
+                    semaphore.acquire();
+                    checkImagePainted=false;
+
+                }catch (Exception e){
+                    System.out.println("Called in sema error "+e.getMessage());
+                    e.printStackTrace();;
+                }
             }
 
-            if(paintInPostExecuteNeeded && !dialog.isShowing()){
-                dialog.setMessage("Please wait while next image is being fetched");
-                dialog.show();
+            if (paintInPostExecuteNeeded && !dialog.isShowing()){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.setMessage("Please wait while next image is being fetched");
+                        dialog.show();
+                    }
+                });
+
 
             }
         }
@@ -180,30 +224,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                            float velocityY) {
-        Log.d("---onFling---", e1.toString() + e2.toString());
-        TestSubjectResults results = testSubjectResults.get(nextCounter-1);
-        results.isAttempted = true;
-        try{
-        if (e1.getY() - e2.getY() > 10) {
-            fingerSwipedUp();
-            results.responseAccurate = results.isPositive == true ? true : false;
-        }
-        if (e1.getY() - e2.getY() < -10) {
-            fingerSwipeDown();
 
-            results.responseAccurate = results.isPositive == false ? true : false;
-        }}catch (Exception e){
-                e.printStackTrace();
-        }
-        endTime = System.nanoTime();
-        results.time = (endTime - startTime);
       //  checkForNextImage();
         return false;
     }
 
     public void checkForNextImage() {
-        if (nextCounter <= ParameterFile.totalGames) {
-            if (nextCounter-1 < testSubjectResults.size() - 1) {
+        if (nextCounter < ParameterFile.totalGames) {
+            if (nextCounter-1 <testSubjectResults.size() - 1) {
                 nextImageNeeded = true;
             } else {
                 paintInPostExecuteNeeded = true;
@@ -212,67 +240,94 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             }
         }else{
             gameOver=true;
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    view.startAnimation(animNormal);
-                }});
             buildReport();
         }
     }
 
 
     public void buildReport(){
+
         totalQuestions=testSubjectResults.size();
+        System.out.println("Size "+testSubjectResults);
         ParameterFile.isGamePlayed=true;
-        SendFeedback feedback=new SendFeedback();
-        for(TestSubjectResults result:testSubjectResults){
-            getCorrect_IncorrectResponses(result);
-            totalTimeTaken+=result.time;
-            feedback.execute(result.isAttempted+"",result.time+"",result.isPositive+"",result.backgroundColor,result.responseAccurate+"");
-            System.out.println("Surinder feedback: " + result.isAttempted + " " + result.time + " " + result.isPositive + " " + result.imageName + " " + result.backgroundColor);
-        }
-
-        testSubjectResults = new ArrayList<TestSubjectResults>(); ;
+        Semaphore semaphore=new Semaphore(0,true);
+        new SendFeedback(semaphore).execute();
+        gameOver=true;
+        nextCounter = 0;
         new FetchParameter().execute();
-        new Thread(){public  void run() {
-            if (testSubjectResults.size() < ParameterFile.totalGames) {
-
-                Login_Activity.fetchImagesExecutorService();
-            }}}.start();
+        testSubjectResults.clear();
+        testSubjectResults = new ArrayList<TestSubjectResults>(); ;
         Intent intent=new Intent(PlayGame.this,HomeScreen.class);
         intent.putExtra("text","Thank you for playing.");
         PlayGame.this.startActivity(intent);
 
     }
 
-    public void getCorrect_IncorrectResponses(TestSubjectResults result){
-        if(result.isAttempted){
-            if(result.responseAccurate)
-                correctResponses++;
-            if(!result.responseAccurate)
-                totalwrongResponse++;
-        }
-    }
+
     @Override
     public void onLongPress(MotionEvent e) {
-        Log.d("---onLongPress---", e.toString());
+
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
                             float distanceY) {
-        Log.d("---onScroll---", e1.toString() + e2.toString());
+
+        //System.out.println("Called on Scroll" + nextCounter);
+        TestSubjectResults results = testSubjectResults.get(nextCounter-1);
+
+        double time=(System.nanoTime()-startTime)/(Math.pow(10,9));
+        results.isAttempted = true;
+       // System.out.println("Called In scroll "+((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))));
+        try{
+            if (e1.getY() - e2.getY() > 10) {
+                fingerSwipedUp();
+                if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
+                    System.out.println("Time "+startTime);
+                    unattemptedQuestions++;
+                    semaphore.release();
+
+                    return false;
+
+                }
+
+                System.out.println("Called boolean "+((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))));
+
+                results.responseAccurate = results.isPositive == true ? true : false;
+                endTime = System.nanoTime();
+                results.time = (endTime - startTime);
+
+            }
+            if (e1.getY() - e2.getY() < -10) {
+                fingerSwipeDown();
+                if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
+                    System.out.println("Time "+startTime);
+                    unattemptedQuestions++;
+                    semaphore.release();
+
+                    return false;
+
+                }
+
+                results.responseAccurate = results.isPositive == false ? true : false;
+
+                endTime = System.nanoTime();
+                results.time = (endTime - startTime);
+            }}catch (Exception e){
+            e.printStackTrace();
+        }
+
         return false;
     }
 
     @Override
     public void onShowPress(MotionEvent e) {
-        Log.d("---onShowPress---", e.toString());
+
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.d("---onSingleTapUp---", e.toString());
+
         return false;
     }
 
@@ -301,11 +356,11 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     @Override
     public void onAnimationEnd(Animation animation) {
         Log.i("Animation", "end");
-        try{
-            Thread.sleep(400);}catch (Exception e){
-            e.printStackTrace();
-        }
+
         checkForNextImage();
+
+        semaphore.release();
+
     }
 
     @Override
@@ -343,7 +398,6 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         super.onDestroy();
         System.out.println("Done on Destroy");
         Login_Activity.outputFile.delete();
-
     }
 
     public void onBackPressed() {

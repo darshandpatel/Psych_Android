@@ -44,45 +44,17 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         if(!isSkipEnable){
             skipButton.setClickable(false);
         }
-        progressDialog=new ProgressDialog(this);
-        progressDialog.setMessage("Downloading demo");
-        progressDialog.show();
-        playVideo();
+        startVideo();
     }
 
-    public void playVideo(){
-        try{
-            int tries=0;
 
-            while(!Login_Activity.isDownloadComplete && tries<100000){
-                if(!Login_Activity.isDownloadStarted){
-                    Login_Activity.downloadDemoVideo();
-                }
-             tries++;
-            }
-            if(Login_Activity.isDownloadComplete){
-                progressDialog.dismiss();
-                startVideo();
-            }
-            if(tries>=100000){
-                progressDialog.setMessage("Unable to download video");
-                Thread.sleep(1000);
-                progressDialog.dismiss();
-                return;
-            }
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     public void startVideo(){
-        System.out.println(Login_Activity.outputFile.getPath());
+
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
 
-        Uri video = Uri.parse(Login_Activity.outputFile.getPath());
+        Uri video = Uri.parse("http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ParameterServlet?queryType=video");
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(video);
         videoView.start();

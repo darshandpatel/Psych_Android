@@ -3,6 +3,7 @@ package project.msd.teenviolence;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import java.util.concurrent.Semaphore;
  */
 public class BuildInstructions {
 
-    static final String URL="http://f2a21c87.ngrok.io/TeenViolenceServer/FetchInstruction";
+    static final String URL="http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/FetchInstruction";
     Context context=null;
     Semaphore semaphore=null;
     String[] instructions=null;
@@ -47,8 +48,8 @@ public class BuildInstructions {
             }
 
             String[] array=instructions.split("\n");
-            array[array.length-2]= array[array.length-2]+" "+ParameterFile.positiveColor;
-            array[array.length-1]= array[array.length-1]+" "+ParameterFile.negativeColor;
+            array[array.length-2]= array[array.length-2]+" "+ Color.parseColor(ParameterFile.positiveColor);
+            array[array.length-1]= array[array.length-1]+" "+Color.parseColor(ParameterFile.negativeColor);
             return array;
         }
         protected void onPostExecute(String array[]){
