@@ -41,7 +41,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener{
 
     public void setTextValues(){
         DecimalFormat df = new DecimalFormat("0.00");
-        username.setText(user);
+        username.setText(ParameterFile.userName);
         sessionID.setText(ParameterFile.sessionID+"");
         responseTime.setText(df.format(PlayGame.totalTimeTaken/(PlayGame.totalQuestions))+"");
         correct.setText(PlayGame.totalCorrectResponse+"");

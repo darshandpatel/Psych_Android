@@ -1,7 +1,9 @@
 package project.msd.teenviolence;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 
@@ -44,8 +46,13 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         if(!isSkipEnable){
             skipButton.setClickable(false);
         }
+
+
         startVideo();
     }
+
+
+
 
 
 

@@ -31,7 +31,8 @@
         <activity android:name=".Questions" />
         <activity android:name=".PlayDemo" />
         <activity android:name=".Feedback" />
-        <activity android:name=".HomeScreen"></activity>
+        <activity android:name=".HomeScreen" />
+        <activity android:name=".DemoColorActivity"></activity>
     </application>
 
 </manifest>

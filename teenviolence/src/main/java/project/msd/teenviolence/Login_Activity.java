@@ -169,15 +169,16 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         alertDialog.show();
     }
 
-    public boolean isCorrectLogin(String userName, String password) {
+    public boolean isCorrectLogin(String username, String password) {
         try {
 
-            System.out.println(userName+" "+password);
-            InputStream stream = BuildConnections.buildConnection(URL + "&username=" + userName + "&password=" + password);
+            System.out.println(username+" "+password);
+            InputStream stream = BuildConnections.buildConnection(URL + "&username=" + username + "&password=" + password);
             String json = IOUtils.toString(stream, ENCODING);
             System.out.println("String " + String.valueOf(json) + " " + json.getClass());
             JSONObject object = new JSONObject(json);
             if (object.getString("success").equalsIgnoreCase("1")) {
+                ParameterFile.userName=userName.getText().toString();
                 ParameterFile.userID = Integer.parseInt(object.getString("userId"));
                 new FetchParameter().execute();
 
@@ -188,9 +189,10 @@ public class Login_Activity extends Activity implements View.OnClickListener {
 
         } catch (IOException | JSONException e) {
             e.printStackTrace();
+            return false;
         }
 
-        return true;
+
     }
 
     public void welcomeActivity() {

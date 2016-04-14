@@ -6,6 +6,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import junit.framework.Test;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -41,13 +42,13 @@ public class SendFeedback extends AsyncTask<Void, Void, Void> {
 
 
             getCorrect_IncorrectResponses(result);
+            DecimalFormat df = new DecimalFormat("0.00");
 
-
-            PlayGame.totalTimeTaken += result.time;
+            PlayGame.totalTimeTaken += ((result.time)/Math.pow(10,6));
 
             System.out.println("Surinder feedback: " + result.isAttempted + " " + result.time + " "+result.responseAccurate+" " + result.isPositive + " " + result.imageName + " " + result.backgroundColor);
             String isAttempted = result.isAttempted + "";
-            String time = result.time + "";
+            String time = df.format((result.time)/Math.pow(10,6)) + " secs";
             String isPositive = result.isPositive + "";
             String bgColor = result.backgroundColor;
             String responseAccurate = result.responseAccurate + "";

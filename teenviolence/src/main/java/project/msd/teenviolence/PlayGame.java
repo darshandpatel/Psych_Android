@@ -277,10 +277,10 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         TestSubjectResults results = testSubjectResults.get(nextCounter-1);
 
         double time=(System.nanoTime()-startTime)/(Math.pow(10,9));
-        results.isAttempted = true;
+
        // System.out.println("Called In scroll "+((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))));
         try{
-            if (e1.getY() - e2.getY() > 10) {
+            if (e1.getY() - e2.getY() <- 10) {
                 fingerSwipedUp();
                 if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
                     System.out.println("Time "+startTime);
@@ -298,7 +298,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                 results.time = (endTime - startTime);
 
             }
-            if (e1.getY() - e2.getY() < -10) {
+            if (e1.getY() - e2.getY() > 10) {
                 fingerSwipeDown();
                 if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
                     System.out.println("Time "+startTime);
@@ -316,7 +316,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             }}catch (Exception e){
             e.printStackTrace();
         }
-
+        results.isAttempted = true;
         return false;
     }
 
