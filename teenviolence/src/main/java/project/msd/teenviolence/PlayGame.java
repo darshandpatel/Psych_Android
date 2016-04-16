@@ -87,9 +87,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         detector = new GestureDetector(this, this);
         loadAnimaions();
         startPlayingTheGame();
-
-
-    }
+}
 
     public void loadAnimaions(){
         animZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_zoom_in);

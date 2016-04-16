@@ -78,7 +78,7 @@ public class PlayDemo extends Activity implements View.OnClickListener {
     }
 
     public void createNewActivity(){
-        Intent intent=new Intent(PlayDemo.this,PlayGame.class);
+        Intent intent=new Intent(PlayDemo.this,DemoColorActivity.class);
         intent.putExtra("speed", 100);
         PlayDemo.this.startActivity(intent);
     }
