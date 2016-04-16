@@ -23,6 +23,8 @@
         android:layout_marginRight="12px"
         android:text="Hello"
         android:textColor="@android:color/white"
-        android:singleLine="false"/>
+        android:singleLine="false"
+        android:layout_marginTop="1dp"/>
+
 
 </LinearLayout>
