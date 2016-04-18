@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -31,6 +32,14 @@ Login_Activity login = new Login_Activity();
     public void testcheckLogin() throws Exception{
 
         assertEquals(false,login.isValidUsername("surindersokhal@gmail.com"));
+    }
+
+    public void testIsCorrectLogin() throws Exception{
+
+        String username = "chini";
+        String passwrord = "sinha";
+        assertEquals(false, login.isCorrectLogin(username,passwrord));
+
     }
 
 }
