@@ -26,6 +26,7 @@ public class FetchImagesTest {
 	public void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	public void testRun() {
 		fail("Not yet implemented");
@@ -35,5 +36,5 @@ public class FetchImagesTest {
 	public void testFetchImage() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

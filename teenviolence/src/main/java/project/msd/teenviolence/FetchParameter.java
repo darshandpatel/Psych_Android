@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
  */
 public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
 
-    final String URL="http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/InitialParameter";
+    final String URL="http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/InitialParameter";
     @Override
     protected JSONObject doInBackground(Void... param){
         try{
@@ -33,13 +33,13 @@ public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
         }
         try {
 
-            System.out.println("Parameter feedback "+object.toString());
+
             ParameterFile.sessionID = Integer.parseInt(object.getString("sessionID"));
             ParameterFile.positiveColor = object.getString("positiveColor");
             ParameterFile.negativeColor = object.getString("negativeColor");
             ParameterFile.totalGames = Integer.parseInt(object.getString("totalGames"));
             ParameterFile.time = (object.getInt("timeInterval"));
-            System.out.println("Value");
+
             new DownloadVideo();
         }catch (Exception e){
             e.printStackTrace();
@@ -69,7 +69,6 @@ public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
             if (size < ParameterFile.totalGames) {
                 FetchImages fetchImages = new FetchImages();
                 executor.execute(fetchImages);
-                System.out.println("Images executed "+ParameterFile.totalGames+" "+size+" "+counter);
                 size++;
             }
             counter++;

@@ -26,9 +26,10 @@ public class RequestToBuildParameterFileTest {
 	public void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	public void testDoInBackground() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

@@ -26,6 +26,7 @@ public class PlayGameTest {
 	public void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	public void testInitialiseValues() {
 		fail("Not yet implemented");
@@ -145,5 +146,5 @@ public class PlayGameTest {
 	public void testOnBackPressed() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

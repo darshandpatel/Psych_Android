@@ -26,6 +26,7 @@ public class Login_ActivityTest {
 	public void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	public void testOnCreate() {
 		fail("Not yet implemented");
@@ -65,5 +66,5 @@ public class Login_ActivityTest {
 	public void testWelcomeActivity() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

@@ -25,7 +25,7 @@ public class SendFeedbackTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+/*
 	@Test
 	public void testSendFeedback() {
 		fail("Not yet implemented");
@@ -40,5 +40,5 @@ public class SendFeedbackTest {
 	public void testDoInBackground() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

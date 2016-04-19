@@ -21,10 +21,9 @@ import java.util.concurrent.Semaphore;
  */
 public class BuildInstructions {
 
-    static final String URL="http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/FetchInstruction";
+    static final String URL="http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/FetchInstruction";
     Context context=null;
     Semaphore semaphore=null;
-    String[] instructions=null;
     public BuildInstructions(Object object,Semaphore sem){
         if(object instanceof Register){
         context= (Register)object;}
@@ -48,13 +47,10 @@ public class BuildInstructions {
             }
 
             String[] array=instructions.split("\n");
-            array[array.length-2]= array[array.length-2]+" "+ Color.parseColor(ParameterFile.positiveColor);
-            array[array.length-1]= array[array.length-1]+" "+Color.parseColor(ParameterFile.negativeColor);
             return array;
         }
         protected void onPostExecute(String array[]){
             displayLists(array);
-
         }
     }
 

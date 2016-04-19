@@ -15,19 +15,17 @@ public class MenuPouplateItems {
     static HomeScreen questions=null;
 
 
-    public static void showDemo(){
-        Intent intent=new Intent(questions,PlayDemo.class);
-        intent.putExtra("speed",100);
-        questions.startActivity(intent);
 
-    }
 
     public static void logout(){
-        Intent intent=new Intent(questions,Login_Activity.class);
-        intent.putExtra("speed",100);
-        questions.startActivity(intent);
+            Intent intent=new Intent(questions,Login_Activity.class);
+            intent.putExtra("speed",100);
+            questions.startActivity(intent);
+
 
     }
+
+
     public static void showHelp(){
 
         LayoutInflater inflater= LayoutInflater.from(questions);
@@ -35,7 +33,10 @@ public class MenuPouplateItems {
                 questions);
         alertDialogBuilder.setTitle("Help");
         alertDialogBuilder
-
+                .setMessage("Please watch the demo to understand the application. \n\nIf you still have doubts, contact the Research Assistants\n" +
+                        "Email:\n" +
+                        "sinha.c@husky.neu.edu\n" +
+                        "sokhal.s@husky.neu.edu")
                 .setCancelable(false)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {

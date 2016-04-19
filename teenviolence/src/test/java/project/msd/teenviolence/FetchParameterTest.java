@@ -26,6 +26,7 @@ public class FetchParameterTest {
 	public void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	public void testDoInBackground() {
 		fail("Not yet implemented");
@@ -40,5 +41,5 @@ public class FetchParameterTest {
 	public void testFetchImagesExecutorService() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

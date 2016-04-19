@@ -18,7 +18,7 @@ public class RegisterTest extends TestCase {
         super.setUp();
 
     }
-
+/*
     public void testPerformRegistration() throws Exception {
         final Semaphore semaphore = new Semaphore(0, true);
         byte[] b=new byte[10];
@@ -32,5 +32,5 @@ public class RegisterTest extends TestCase {
         }
 
     }
-
+*/
 }

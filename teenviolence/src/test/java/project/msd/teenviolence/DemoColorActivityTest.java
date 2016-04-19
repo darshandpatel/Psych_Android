@@ -26,6 +26,7 @@ public class DemoColorActivityTest {
 	public void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	public void testOnCreate() {
 		fail("Not yet implemented");
@@ -40,5 +41,5 @@ public class DemoColorActivityTest {
 	public void testCreateNewActivity() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

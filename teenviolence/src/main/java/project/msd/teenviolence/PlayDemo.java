@@ -25,8 +25,6 @@ public class PlayDemo extends Activity implements View.OnClickListener {
 
     VideoView videoView=null;
     Button skipButton=null;
-    Semaphore semaphore=new Semaphore(0,true);
-    ProgressDialog progressDialog=null;
     boolean isSkipEnable=true;
 
     public void onBackPressed() {
@@ -43,7 +41,9 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         Intent intent = getIntent();
         isSkipEnable=intent.getBooleanExtra("skipEnabled",true);
         skipButton.setOnClickListener(this);
+
         if(!isSkipEnable){
+            skipButton.setVisibility(View.INVISIBLE);
             skipButton.setClickable(false);
         }
 
@@ -61,7 +61,7 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
 
-        Uri video = Uri.parse("http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ParameterServlet?queryType=video");
+        Uri video = Uri.parse("http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ParameterServlet?queryType=video");
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(video);
         videoView.start();
@@ -92,7 +92,5 @@ public class PlayDemo extends Activity implements View.OnClickListener {
     protected void onDestroy(){
         super.onDestroy();
         System.out.println("Done on Destroy");
-        Login_Activity.outputFile.delete();
-
     }
 }

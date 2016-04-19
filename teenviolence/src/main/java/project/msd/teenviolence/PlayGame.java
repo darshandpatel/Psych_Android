@@ -85,6 +85,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         linearLayout.setBackgroundColor(Color.rgb(12, 12, 12));
         view = (ImageView) findViewById(R.id.imageView);
         detector = new GestureDetector(this, this);
+
+
         loadAnimaions();
         startPlayingTheGame();
 }
@@ -128,7 +130,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     synchronized public void paintNextImage(Semaphore sema) {
         final Semaphore semaphore=sema;
         if(!gameOver) {
-            System.out.println("Games " + ParameterFile.totalGames + " \nValue " + testSubjectResults.size());
+
             runOnUiThread(new Runnable() {
                 public void run() {
                     view.startAnimation(animNormal);
@@ -144,7 +146,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                         linearLayout.setBackgroundColor(Color.parseColor(testSubjectResults.get(nextCounter).backgroundColor));
                     }
                     view.setImageBitmap(testSubjectResults.get(nextCounter).image);
-                    System.out.println("Called classes in runUI" + nextCounter);
+
                     nextCounter++;
                     nextImageNeeded = false;
                     dialog.dismiss();
@@ -168,18 +170,18 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
             if (nextCounter>= ParameterFile.totalGames) {
                 gameOver=true;
-                System.out.println("Called classes in paintImages"+nextCounter);
+
                 buildReport();
                 break;
             }
 
             if(nextImageNeeded && ((nextCounter) > (testSubjectResults.size() - 1))){
-                System.out.println("NExt Image needed "+nextCounter+" "+testSubjectResults.size());
+
                 paintInPostExecuteNeeded=true;
                 dialog.dismiss();
             }
             if (((nextCounter==0 && testSubjectResults.size()>1 )|| nextImageNeeded)) {
-               System.out.println("Called in if loop "+nextCounter);
+
                 paintNextImage(semaphore);
                 try{
 
@@ -187,7 +189,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                     checkImagePainted=false;
 
                 }catch (Exception e){
-                    System.out.println("Called in sema error "+e.getMessage());
+
                     e.printStackTrace();;
                 }
             }
@@ -246,7 +248,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     public void buildReport(){
 
         totalQuestions=testSubjectResults.size();
-        System.out.println("Size "+testSubjectResults);
+
         ParameterFile.isGamePlayed=true;
         Semaphore semaphore=new Semaphore(0,true);
         new SendFeedback(semaphore).execute();
@@ -254,9 +256,10 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         nextCounter = 0;
         new FetchParameter().execute();
         testSubjectResults.clear();
-        testSubjectResults = new ArrayList<TestSubjectResults>(); ;
-        Intent intent=new Intent(PlayGame.this,HomeScreen.class);
-        intent.putExtra("text","Thank you for playing.");
+        testSubjectResults = new ArrayList<TestSubjectResults>();
+        ParameterFile.QuestionSession=1;
+        Intent intent=new Intent(PlayGame.this,Questions.class);
+        intent.putExtra("isQuestion",true);
         PlayGame.this.startActivity(intent);
 
     }
@@ -271,25 +274,23 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
                             float distanceY) {
 
-        //System.out.println("Called on Scroll" + nextCounter);
+
         TestSubjectResults results = testSubjectResults.get(nextCounter-1);
 
         double time=(System.nanoTime()-startTime)/(Math.pow(10,9));
 
-       // System.out.println("Called In scroll "+((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))));
+
         try{
             if (e1.getY() - e2.getY() <- 10) {
                 fingerSwipedUp();
                 if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
-                    System.out.println("Time "+startTime);
+
                     unattemptedQuestions++;
                     semaphore.release();
-
                     return false;
-
                 }
 
-                System.out.println("Called boolean "+((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))));
+
 
                 results.responseAccurate = results.isPositive == true ? true : false;
                 endTime = System.nanoTime();
@@ -299,7 +300,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             if (e1.getY() - e2.getY() > 10) {
                 fingerSwipeDown();
                 if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
-                    System.out.println("Time "+startTime);
+
                     unattemptedQuestions++;
                     semaphore.release();
 
@@ -366,36 +367,11 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
     }
 
-    public void buildAlertDialog() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
-
-        // set title
-        alertDialogBuilder.setTitle("User verification failed");
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("Invalid username or pasword")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, close
-                        // current activity
-                        dialog.cancel();
-                    }
-                });
-
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-    }
 
     protected void onDestroy(){
         super.onDestroy();
         System.out.println("Done on Destroy");
-        Login_Activity.outputFile.delete();
+
     }
 
     public void onBackPressed() {

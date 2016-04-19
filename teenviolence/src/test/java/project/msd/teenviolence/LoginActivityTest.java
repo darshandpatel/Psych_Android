@@ -36,8 +36,8 @@ Login_Activity login = new Login_Activity();
 
     public void testIsCorrectLogin() throws Exception{
 
-        String username = "chini";
-        String passwrord = "sinha";
+        String username = "meenakshi";
+        String passwrord = "abc";
         assertEquals(false, login.isCorrectLogin(username,passwrord));
 
     }

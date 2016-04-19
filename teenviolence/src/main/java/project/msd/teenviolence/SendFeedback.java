@@ -16,15 +16,12 @@ import java.util.concurrent.Semaphore;
 
 public class SendFeedback extends AsyncTask<Void, Void, Void> {
 
-    static String URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/imageData/ImageDataServlet?";
+    static String URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/imageData/ImageDataServlet?";
     Semaphore semaphore=null;
     ArrayList<TestSubjectResults> arrayList=null;
     public SendFeedback(Semaphore sem){
         arrayList=new ArrayList<TestSubjectResults>();
-
-
         arrayList.addAll(PlayGame.testSubjectResults);
-        System.out.println("Surinder original " + PlayGame.testSubjectResults + " \nSurinder copied" + arrayList);
         semaphore=sem;
 
     }
@@ -43,18 +40,17 @@ public class SendFeedback extends AsyncTask<Void, Void, Void> {
 
             getCorrect_IncorrectResponses(result);
             DecimalFormat df = new DecimalFormat("0.00");
-
             PlayGame.totalTimeTaken += ((result.time)/Math.pow(10,6));
-
-            System.out.println("Surinder feedback: " + result.isAttempted + " " + result.time + " "+result.responseAccurate+" " + result.isPositive + " " + result.imageName + " " + result.backgroundColor);
             String isAttempted = result.isAttempted + "";
             String time = df.format((result.time)/Math.pow(10,6)) + " secs";
             String isPositive = result.isPositive + "";
             String bgColor = result.backgroundColor;
             String responseAccurate = result.responseAccurate + "";
             String userID = ParameterFile.userID + "";
-            String data = "param=" + isAttempted + "&param=" + time + "&param=" + isPositive + "&param=" +
-                    bgColor + "&param=" + responseAccurate + "&param=" + userID;
+            String data = "param=" + Register.encodeString(isAttempted) + "&param=" + Register.encodeString(time) + "&param=" +
+                    Register.encodeString(isPositive) + "&param=" +
+                    Register.encodeString(bgColor) + "&param=" +
+                    Register.encodeString(responseAccurate) + "&param=" + userID;
             try {
                 BuildConnections.buildConnection(URL + data);
             } catch (Exception e) {

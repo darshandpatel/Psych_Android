@@ -23,16 +23,14 @@ public class FetchImages implements Runnable {
 
     static RequestQueue requestQueue = null;
     static Semaphore semaphore = new Semaphore(0, true);
-    final static String POSITIVE_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
-    final static String NEGATIVE_URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
+    final static String POSITIVE_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
+    final static String NEGATIVE_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
     final static Random random = new Random();
 
 
     public void run() {
-        boolean check = false;
-        int counter = 0;
+        boolean check;
         {
-            System.out.println(PlayGame.testSubjectResults.size());
             double start = System.nanoTime();
             check = random.nextInt(2) == 1 ? true : false;
             fetchImage(check);
@@ -66,16 +64,11 @@ public class FetchImages implements Runnable {
         if(stream!=null && PlayGame.testSubjectResults.size()<=ParameterFile.totalGames ) {
             Bitmap image = BitmapFactory.decodeStream(stream, null, options);
             TestSubjectResults temp = new TestSubjectResults();
-
             temp.backgroundColor = color;
             temp.image = image;
             temp.isPositive = isPositive;
-            //temp.imageX=image.getWidth();
-            //temp.imageY=image.getHeight();
             temp.time = ParameterFile.time;
-
-                PlayGame.testSubjectResults.add(temp);
-                System.out.println("Size added to image" + PlayGame.testSubjectResults.size());
+            PlayGame.testSubjectResults.add(temp);
             }
         }
 

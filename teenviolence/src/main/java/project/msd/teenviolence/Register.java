@@ -35,7 +35,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     ProgressDialog progressDialog = null;
     Object[] datatype;
     int temp[]=new int[5];
-    static final String URL = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/registration/Register";
+    static final String URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/registration/Register";
     Spinner age, gender, ethnicity, mobile_exp, education;
     EditText username, password, psycoMeds;
     CheckBox disabiltiy, color;
@@ -174,7 +174,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
             new FetchAggrement().execute();
 
         } else {
-            createNextActivity(Login_Activity.class);
+            createNextActivity(Login_Activity.class,"");
         }
 
     }
@@ -265,7 +265,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
                                     semaphore.acquire();
                                     if (success) {
                                         progressDialog.dismiss();
-                                        createNextActivity(HomeScreen.class);
+                                        String user="Welcome: " + username.getText().toString();
+                                        createNextActivity(Login_Activity.class,user);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -301,10 +302,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
 
     public boolean performRegistration(Semaphore sema) {
         try {
-
-            byte[] b=new byte[10];
-            Base64.encodeToString(b,Base64.URL_SAFE|Base64.NO_WRAP);
-            String url = URL + "?queryType=register&param=" + encodeString(username.getText().toString()) + "&param=" +
+        String url = URL + "?queryType=register&param=" + encodeString(username.getText().toString()) + "&param=" +
                     encodeString(password.getText().toString()) + "&param=" + (age.getSelectedItem().toString()) + "&param=" +
                     encodeString(ethnicity.getSelectedItem().toString()) + "&param=" + encodeString(gender.getSelectedItem().toString()) +
                     "&param=" + encodeString(disabiltiy.isChecked()+"") + "&param=" + encodeString(mobile_exp.getSelectedItem().toString()) +
@@ -348,15 +346,16 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
 
 
 
-    public void createNextActivity(Class clas) {
+    public void createNextActivity(Class clas,String sendData) {
         Intent intent = new Intent(Register.this, clas);
         intent.putExtra("speed", 100);
+        intent.putExtra("text", sendData);
         Register.this.startActivity(intent);
     }
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         System.out.println("Done on Destroy");
-        Login_Activity.outputFile.delete();
+
 
     }
 }

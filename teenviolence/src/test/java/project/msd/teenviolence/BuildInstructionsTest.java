@@ -25,7 +25,7 @@ public class BuildInstructionsTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+/*
 	@Test
 	public void testBuildInstructions() {
 		fail("Not yet implemented");
@@ -35,5 +35,5 @@ public class BuildInstructionsTest {
 	public void testDisplayLists() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

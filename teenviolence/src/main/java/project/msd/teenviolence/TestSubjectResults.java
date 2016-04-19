@@ -12,8 +12,6 @@ public class TestSubjectResults {
     public long time=3;
     public boolean responseAccurate = false;
     String backgroundColor="#";
-    String imageName="";
     public boolean isAttempted=false;
-    int imageX=0;
-    int imageY=0;
+
 }

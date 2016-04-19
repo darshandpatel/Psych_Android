@@ -44,10 +44,8 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     Button loginButton = null, signUpButton = null;
     EditText userName = null;
     EditText passowrd = null;
-    static File outputFile = null;
     static Login_Activity activity = null;
-    //static String ADDRESS="http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
-    static String ADDRESS = "http://ec2-52-38-37-183.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
+    static String ADDRESS = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
 
 
     static boolean isDownloadComplete = false;
@@ -56,13 +54,13 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     final static String DEMOURL = ADDRESS + "ParameterServlet";
     final String ENCODING = "UTF-8";
     static ParameterFile paramObject = null;
-    static boolean isDownloadStarted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.login_activity);
         loginButton = (Button) findViewById(R.id.loginButton);
         signUpButton = (Button) findViewById(R.id.SignupButton);
@@ -83,8 +81,6 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     protected void onDestroy(){
         super.onDestroy();
         System.out.println("Done on Destroy");
-        outputFile.delete();
-
     }
     public void onBackPressed() {
 
@@ -179,9 +175,9 @@ public class Login_Activity extends Activity implements View.OnClickListener {
             JSONObject object = new JSONObject(json);
             if (object.getString("success").equalsIgnoreCase("1")) {
                 ParameterFile.userName=userName.getText().toString();
+                ParameterFile.QuestionSession=0;
                 ParameterFile.userID = Integer.parseInt(object.getString("userId"));
                 new FetchParameter().execute();
-
                 return true;
             } else
                 return false;

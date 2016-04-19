@@ -13,9 +13,7 @@
     <item android:id="@+id/feedback"
         android:title="Feedback"
         />
-    <item android:id="@+id/demo"
-        android:title="Demo"
-        />
+
     <item android:id="@+id/logout"
         android:title="Logout"
         />

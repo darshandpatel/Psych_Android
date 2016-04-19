@@ -3,20 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:id="@+id/layoutColor"
     android:background="@android:color/black"
     tools:context="project.msd.teenviolence.DemoColorActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layoutColor"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        >
 
 
     <TextView
         android:id="@+id/demoColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textSize="20dp"
         android:layout_gravity="center_horizontal|center_vertical"
         android:gravity="center_horizontal|center_vertical"
         android:layout_marginLeft="12px"
@@ -26,5 +31,5 @@
         android:singleLine="false"
         android:layout_marginTop="1dp"/>
 
-
+    </LinearLayout>
 </LinearLayout>

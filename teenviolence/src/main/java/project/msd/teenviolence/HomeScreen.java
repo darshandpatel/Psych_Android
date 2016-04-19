@@ -35,7 +35,7 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
         game.setOnClickListener(this);
         MenuPouplateItems.questions = this;
 
-        System.out.println(ParameterFile.totalGames);
+
 
     }
 
@@ -60,9 +60,6 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
             case R.id.feedback:
                 MenuPouplateItems.showFeedback(textView.getText().toString());
                 return true;
-            case R.id.demo:
-                MenuPouplateItems.showDemo();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -84,6 +81,7 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
             HomeScreen.this.startActivity(intent);
         }
         if (view.getId() == R.id.playGame) {
+            ParameterFile.QuestionSession=0;
             Intent intent=new Intent(HomeScreen.this,Questions.class);
             intent.putExtra("demoNeeded",false);
             HomeScreen.this.startActivity(intent);
@@ -97,8 +95,6 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
     protected void onDestroy(){
         super.onDestroy();
         System.out.println("Done on Destroy");
-        Login_Activity.outputFile.delete();
-
     }
 
 
