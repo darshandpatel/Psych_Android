@@ -13,7 +13,8 @@ import java.util.concurrent.Executors;
  */
 public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
 
-    final String URL="http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/InitialParameter";
+    //final String URL="http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/InitialParameter";
+    final String URL="http://10.0.2.2:8080/TeenViolenceServer2/parameter/InitialParameter";
     @Override
     protected JSONObject doInBackground(Void... param){
         try{

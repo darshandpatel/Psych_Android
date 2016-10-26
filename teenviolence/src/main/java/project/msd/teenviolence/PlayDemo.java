@@ -61,7 +61,8 @@ public class PlayDemo extends Activity implements View.OnClickListener {
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
 
-        Uri video = Uri.parse("http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ParameterServlet?queryType=video");
+        //Uri video = Uri.parse("http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ParameterServlet?queryType=video");
+        Uri video = Uri.parse("http://10.0.2.2:8080/TeenViolenceServer2/ParameterServlet?queryType=video");
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(video);
         videoView.start();

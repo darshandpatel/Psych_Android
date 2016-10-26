@@ -40,7 +40,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     TextView[] questionsViews;
 
     boolean isQuestion;
-    final static String QUESTION_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
+    //final static String QUESTION_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
+    final static String QUESTION_URL = "http://10.0.2.2:8080/TeenViolenceServer2/questionnaire/Questionnaire";
     static Questions questions = null;
     Semaphore semaphore = new Semaphore(0, true);
     ProgressDialog progressDialog = null;

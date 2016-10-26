@@ -21,7 +21,8 @@ import java.util.concurrent.Semaphore;
  */
 public class BuildInstructions {
 
-    static final String URL="http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/FetchInstruction";
+    //static final String URL="http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/parameter/FetchInstruction";
+    static final String URL="http://10.0.2.2:8080/TeenViolenceServer2/parameter/FetchInstruction";
     Context context=null;
     Semaphore semaphore=null;
     public BuildInstructions(Object object,Semaphore sem){

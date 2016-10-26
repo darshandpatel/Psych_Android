@@ -16,7 +16,8 @@ import java.util.concurrent.Semaphore;
 
 public class SendFeedback extends AsyncTask<Void, Void, Void> {
 
-    static String URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/imageData/ImageDataServlet?";
+    //static String URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/imageData/ImageDataServlet?";
+    static String URL = "http://10.0.2.2:8080/TeenViolenceServer2/imageData/ImageDataServlet?";
     Semaphore semaphore=null;
     ArrayList<TestSubjectResults> arrayList=null;
     public SendFeedback(Semaphore sem){
