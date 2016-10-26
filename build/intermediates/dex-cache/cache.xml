@@ -3,93 +3,39 @@
 
     <item
         is-multidex="true"
-        jar="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="d52dcc2faa6ca4ed769841562b17b04641b9a8b0">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_16feb89079d333d9e8af20770a694cd7f328feb7/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.1.1_74fb2af680bcaa0a34f60f075d27096f590cb03c/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.1.1_4356e0ecbec75686c5f9f755c77db5bcf6d7cc2e/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.1.1_6012764ef48c750ce4f76d1451f4f4ba4d4b8cf9/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient-android/4.3.5.1/eecbb0b998e77629862a13d957d552b3be58fc4e/httpclient-android-4.3.5.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="eecbb0b998e77629862a13d957d552b3be58fc4e">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/httpclient-android-4.3.5.1_8c49393ce76684603c17dbccf91e811d731a6e63/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="1a37fd0b7f537877adcfdb62c3a92aeb73ef7510">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_b0b17eabd71dc589294371d012a32aacf686ed3f/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/com.mcxiaoke.volley/library/1.0.0/15f8abc7f1414bbffca8d32b73097223d3a83847/library-1.0.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="15f8abc7f1414bbffca8d32b73097223d3a83847">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/library-1.0.0_bae817b663d39bae928e58f88942104087ca2a5c/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.3_13ab38fecf77f8551e0c16126cf071203eebdf70/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Darshan/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.1.1_c8c9ff308026bb347403f2f36c478b36f1d7968d/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.5/2852e6e05fbb95076fc091f6d1780f1f8fe35e0f/commons-io-2.5.jar"
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
         sha1="2852e6e05fbb95076fc091f6d1780f1f8fe35e0f">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/commons-io-2.5_e96511378bc3bb56a6e3ab2ac13650b855f90d69/classes.dex" />
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/commons-io-2.5_e96511378bc3bb56a6e3ab2ac13650b855f90d69/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="bff70f087cc4b9d935242c7690b5e3ce1fdd9324">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_9223ca60076da0e4dd463cba61b19a21a20ec6c6/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.1.1_c7826225d6aa2b7d6b819ffa9e18f9ee67d2a7d1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="7637b533c978a5988aa76300f4bf8636f8970520">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_eeb5a79c8c91a1f9b928cb32bd21bb0ee1bbc3f5/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -98,7 +44,52 @@
         optimize="true"
         revision="23.0.2"
         sha1="c8d96f6fd2bcc179c312da33ee670a71188cc60d">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/httpclient-4.4.1.1_38252144fb02e7dfbb0fd83e482898fb25437dba/classes.dex" />
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/httpclient-4.4.1.1_38252144fb02e7dfbb0fd83e482898fb25437dba/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.1.1_6559329c9ce721308efd7e93373b837768f688e6/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient-android/4.3.5.1/eecbb0b998e77629862a13d957d552b3be58fc4e/httpclient-android-4.3.5.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="eecbb0b998e77629862a13d957d552b3be58fc4e">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/httpclient-android-4.3.5.1_8c49393ce76684603c17dbccf91e811d731a6e63/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/com.mcxiaoke.volley/library/1.0.0/15f8abc7f1414bbffca8d32b73097223d3a83847/library-1.0.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="15f8abc7f1414bbffca8d32b73097223d3a83847">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/library-1.0.0_bae817b663d39bae928e58f88942104087ca2a5c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.3_13ab38fecf77f8551e0c16126cf071203eebdf70/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.1.1_1b8dc0f23ab757b291305003ca7ebaf160fe1f77/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -107,7 +98,16 @@
         optimize="true"
         revision="23.0.2"
         sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
-        <dex dex="/Users/Darshan/Documents/Psych/TeenViolence2/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/picasso-2.5.2_9d5180fdfc87c95695b4d00791b027c4a0634de1/classes.dex" />
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/picasso-2.5.2_9d5180fdfc87c95695b4d00791b027c4a0634de1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Darshan/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Users/Darshan/Documents/Psych_Android/teenviolence/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.1.1_c8c9ff308026bb347403f2f36c478b36f1d7968d/classes.dex" />
     </item>
 
 </items>

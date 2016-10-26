@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TeenViolence2.iml" filepath="$PROJECT_DIR$/TeenViolence2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Psych_Android.iml" filepath="$PROJECT_DIR$/Psych_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/teenviolence/teenviolence.iml" filepath="$PROJECT_DIR$/teenviolence/teenviolence.iml" />
     </modules>
   </component>
