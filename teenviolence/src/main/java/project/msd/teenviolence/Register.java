@@ -36,9 +36,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     Object[] datatype;
     int temp[]=new int[5];
     //static final String URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/registration/Register";
-    static final String URL = "http://10.0.2.2:8080/TeenViolenceServer2/registration/Register";
+    static final String URL = "http://10.0.2.2:8080/Psych-1/registration/Register";
     Spinner age, gender, ethnicity, mobile_exp, education;
-    EditText username, password, psycoMeds;
+    EditText username, password, psycoMeds, regCode;
     CheckBox disabiltiy, color;
     boolean isActivityStarted=false;
 
@@ -78,6 +78,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
         color = (CheckBox) findViewById(R.id.colorblindness);
         disabiltiy = (CheckBox) findViewById(R.id.disability);
         psycoMeds = (EditText) findViewById(R.id.psycoMed);
+        regCode = (EditText) findViewById(R.id.regCode) ;
 
 
         age.setAdapter(adapter);
@@ -298,16 +299,20 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     public static String encodeString(String rawString){
         byte array[]=rawString.getBytes();
         String encodedString=Base64.encodeToString(array,Base64.URL_SAFE|Base64.NO_WRAP);
-        return encodedString;
+        //return encodedString;
+        return rawString;
     }
 
     public boolean performRegistration(Semaphore sema) {
         try {
+            System.out.println("inside perfor registration");
+            System.out.println("registrationCode"+regCode.getText().toString());
         String url = URL + "?queryType=register&param=" + encodeString(username.getText().toString()) + "&param=" +
                     encodeString(password.getText().toString()) + "&param=" + (age.getSelectedItem().toString()) + "&param=" +
                     encodeString(ethnicity.getSelectedItem().toString()) + "&param=" + encodeString(gender.getSelectedItem().toString()) +
                     "&param=" + encodeString(disabiltiy.isChecked()+"") + "&param=" + encodeString(mobile_exp.getSelectedItem().toString()) +
-                    "&param=" + encodeString(psycoMeds.getText().toString()) + "&param=" + encodeString(color.isChecked()+"")+ "&param=" + encodeString(education.getSelectedItem().toString());
+                    "&param=" + encodeString(psycoMeds.getText().toString()) + "&param=" + encodeString(color.isChecked()+"")+ "&param=" + encodeString(education.getSelectedItem().toString())
+                    +"&param="+ encodeString(regCode.getText().toString()) ;
 
             System.out.println("Done "+url);
 
