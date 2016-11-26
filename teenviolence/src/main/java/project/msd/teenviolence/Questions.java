@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,9 +20,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +37,9 @@ import org.json.JSONObject;
 
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 public class Questions extends AppCompatActivity implements View.OnClickListener {
@@ -36,16 +47,23 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
     Button button = null;
     LinearLayout layout = null;
-    SeekBar[] edits;
+    View[] edits;
     TextView[] questionsViews;
 
     boolean isQuestion;
     //final static String QUESTION_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
-    final static String QUESTION_URL = "http://10.0.2.2:8080/TeenViolenceServer2/questionnaire/Questionnaire";
+    //final static String QUESTION_URL = "http://10.0.2.2:8080/TeenViolenceServer2/questionnaire/Questionnaire";
+    final static String QUESTION_URL = "http://10.0.2.2:8080/Psych-1/";
     static Questions questions = null;
     Semaphore semaphore = new Semaphore(0, true);
     ProgressDialog progressDialog = null;
     boolean demoPlayed = true;
+    ArrayList<QuestionDetails> questionsArrayList  = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,30 +80,82 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         progressDialog.setMessage("Please wait while questions are being fetched");
         progressDialog.show();
         ;
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    class fetchQuestions extends AsyncTask<String, Void, String[]> {
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Questions Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
 
-        protected String[] doInBackground(String... parms) {
-            String questions[] = null;
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
+    class fetchQuestions extends AsyncTask<String, Void, ArrayList<QuestionDetails>> {
+
+        protected ArrayList<QuestionDetails> doInBackground(String... parms) {
+
+
             try {
                 InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "" +
-                        "?requestType=request&questionSession=" + ParameterFile.QuestionSession);
+                        "question?targetGroupId=1");
 
                 JSONObject object = BuildConnections.getJSOnObject(stream);
-                JSONArray array = object.getJSONArray("questions");
-                questions = new String[array.length()];
-                for (int i = 0; i < array.length(); i++) {
-                    questions[i] = array.getJSONObject(i).getString("question");
+
+                JSONArray array = object.getJSONArray("results");
+                int length = array.length();
+                questionsArrayList = new ArrayList<QuestionDetails>();
+
+                for (int i = 0; i < length; i++) {
+
+                    QuestionDetails questionDetails = new QuestionDetails();
+                    questionDetails.setresponseType(array.getJSONObject(i).getString("responseType"));
+                    questionDetails.setquestionId(array.getJSONObject(i).getString("questionId"));
+                    questionDetails.setstartLabel(array.getJSONObject(i).getString("startLabel"));
+                    questionDetails.setendLabel(array.getJSONObject(i).getString("endLabel"));
+                    questionDetails.setquestionName(array.getJSONObject(i).getString("questionName"));
+                    questionsArrayList.add(questionDetails);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return questions;
+            return questionsArrayList;
         }
 
-        protected void onPostExecute(String questions[]) {
-            displayQuestions(questions);
+
+        protected void onPostExecute(ArrayList<QuestionDetails> questionsArrayList) {
+            displayQuestions(questionsArrayList);
             semaphore.release();
             displayButton();
             progressDialog.dismiss();
@@ -130,12 +200,14 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         Questions.this.startActivity(intent);
     }
 
-    public void displayQuestions(String questions[]) {
+    public void displayQuestions(ArrayList<QuestionDetails> questionsArrayList) {
         layout.removeAllViews();
-        edits = new SeekBar[questions.length];
-        questionsViews = new TextView[questions.length];
+        int nbrOfQuestion = questionsArrayList.size();
+        //edits = new SeekBar[nbrOfQuestion];
+        edits = new View[nbrOfQuestion];
+        questionsViews = new TextView[nbrOfQuestion];
         LinearLayout lLayout = null;
-        for (int i = 0; i < questions.length; i++) {
+        for (int i = 0; i < nbrOfQuestion; i++) {
             lLayout = new LinearLayout(this);
             lLayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -144,14 +216,18 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lparams.weight = 1;
             lparams.setMargins(0, 10, 0, 0);
-            TextView tView = buildTextView(i, questions[i], lparams);
-
-            SeekBar eView = buildEditView(lparams);
-
-
+            TextView tView = buildTextView(i, questionsArrayList.get(i).getquestionName(), lparams);
+            View questionReplyView = null;
+            if(questionsArrayList.get(i).getresponseType().equals("Categorical")){
+                questionReplyView = buildRadioGroupView(lparams, questionsArrayList.get(i).getstartLabel(),
+                        questionsArrayList.get(i).getendLabel());
+            }else{
+                questionReplyView = buildEditView(lparams);
+            }
+            //SeekBar eView =buildEditView(lparams);
             lLayout.addView(tView);
-            lLayout.addView(eView);
-            edits[i] = eView;
+            lLayout.addView(questionReplyView);
+            edits[i] = questionReplyView;
             questionsViews[i] = tView;
             layout.addView(lLayout);
         }
@@ -166,6 +242,32 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         return bar;
     }
 
+    public RadioGroup buildRadioGroupView(ViewGroup.LayoutParams layoutParams,
+                                          String startLabelStr,
+                                          String endLabelStr) {
+        RadioGroup rg = new RadioGroup(this);
+        rg.setOrientation(RadioGroup.HORIZONTAL);
+        rg.setLayoutParams(layoutParams);
+
+        RadioButton startLabel  = new RadioButton(this);
+        RadioButton endLabel  = new RadioButton(this);
+        rg.addView(startLabel, layoutParams);
+        rg.addView(endLabel, layoutParams);
+        startLabel.setText(startLabelStr);
+        //startLabel.setId(startLabelStr.hashCode());
+        //startLabel.setId(endLabelStr.hashCode());
+        startLabel.setSelected(true);
+        startLabel.setTextColor(Color.WHITE);
+        endLabel.setTextColor(Color.WHITE);
+
+        //startLabel.setBackground(getDrawable(R.drawable.edit_text));
+        //endLabel.setBackground(getDrawable(R.drawable.edit_text));
+        endLabel.setText(endLabelStr);
+        //rg.check(startLabel.getId());
+        rg.setBackground(getDrawable(R.drawable.edit_text));
+        return rg;
+    }
+
     public TextView buildTextView(int i, String question, ViewGroup.LayoutParams lparams) {
         TextView edit_text = new TextView(this);
         edit_text.canScrollHorizontally(0);
@@ -177,16 +279,16 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     }
 
 
-    class SendFeedback extends AsyncTask<String, Void, JSONObject> {
+    class SendFeedback extends AsyncTask<HashMap<String, Object>, Void, JSONObject> {
 
-        protected JSONObject doInBackground(String... parms) {
+        protected JSONObject doInBackground(HashMap<String, Object>... params) {
             JSONObject object = null;
             try {
 
-                String feedback = parms[0];
-                System.out.println("feedback " + feedback);
-
-                InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
+                //String feedback = params[0];
+                //System.out.println("feedback " + feedback);
+                InputStream stream = BuildConnections.buildPostConnection(QUESTION_URL+"/Question", params);
+                //InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
                 object = BuildConnections.getJSOnObject(stream);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -203,7 +305,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 if (val.equalsIgnoreCase("successful")) {
 
                     if (ParameterFile.QuestionSession == 1) {
-                        createNewActivity(HomeScreen.class, "Thanks for playing\n"+ParameterFile.userName);
+                        createNewActivity(HomeScreen.class, "Thanks for playing\n" + ParameterFile.userName);
                     } else {
 
 
@@ -245,21 +347,31 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         Questions.this.startActivity(intent);
     }
 
-    public String getResults() {
-        String result = "{\"feedback\":[";
-        String questions = "";
-        String answers = "";
+    public HashMap<String, Object> getResults() {
+
+        HashMap<String, Object> results = new HashMap<String, Object>();
+        ArrayList<HashMap<String, String>> responses = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < questionsViews.length; i++) {
-            String val = questionsViews[i].getText().toString().trim();
-            val = Register.encodeString(val.substring(val.indexOf(")") + 1, val.length()));
-            questions += "&question=" + val;
-            String answer = getAnswer(edits[i].getProgress());
-            answers += "&answer=" + answer;
+            HashMap<String, String> response = new HashMap<String, String>();
+            response.put("questionId", questionsArrayList.get(i).getquestionId());
+            if(edits[i] instanceof SeekBar){
+                response.put("response",Integer.toString(((SeekBar)edits[i]).getProgress()));
+                response.put("responseType", "Continuous");
+            }else{
+                response.put("response",Integer.toString(((SeekBar)edits[i]).getProgress()));
+                response.put("responseType", "Categorical");
+            }
+            responses.add(response);
+            //String answer = getAnswer(((SeekBar)edits[i]).getProgress());
         }
-
-
-        return questions + answers + "&userID=" + ParameterFile.userID + "&sessionID=" + ParameterFile.sessionID +
-                "&sessionDate=" + (new Date()).toString() + "&questionSession=" + ParameterFile.QuestionSession;
+        results.put("responses", responses);
+        results.put("userId", Integer.toString(ParameterFile.userID));
+        results.put("sessionId", Integer.toString(ParameterFile.sessionID));
+        results.put("sessionDate",(new Date()).toString());
+        results.put("questionSession",Integer.toString(ParameterFile.QuestionSession));
+        //return questions + answers + "&userID=" + ParameterFile.userID + "&sessionID=" + ParameterFile.sessionID +
+        //        "&sessionDate=" + (new Date()).toString() + "&questionSession=" + ParameterFile.QuestionSession;
+        return results;
 
     }
 

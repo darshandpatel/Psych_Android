@@ -28,6 +28,7 @@ import java.io.OutputStream;
 
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,8 +47,9 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     EditText passowrd = null;
     static Login_Activity activity = null;
     //static String ADDRESS = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
-    static String ADDRESS = "http://10.0.2.2:8080/TeenViolenceServer2/";
+   // static String ADDRESS = "http://10.0.2.2:8080/TeenViolenceServer2/";
 
+    static String ADDRESS = "http://10.0.2.2:8080/Psych-1/";
 
     static boolean isDownloadComplete = false;
 
@@ -72,9 +74,6 @@ public class Login_Activity extends Activity implements View.OnClickListener {
         loginButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
 
-
-
-
     }
 
 
@@ -87,13 +86,6 @@ public class Login_Activity extends Activity implements View.OnClickListener {
 
         return;
     }
-
-
-
-
-
-
-
 
     @Override
     public void onClick(View view) {
@@ -168,9 +160,13 @@ public class Login_Activity extends Activity implements View.OnClickListener {
 
     public boolean isCorrectLogin(String username, String password) {
         try {
-
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put(Constant.USERNAME,username);
+            params.put(Constant.PASSWORD,password);
             System.out.println(username+" "+password);
-            InputStream stream = BuildConnections.buildConnection(URL + "&username=" + username + "&password=" + password);
+            String loginURL = Constant.SERVER_ADDRESS + "AuthenticatingUser";
+            InputStream stream = BuildConnections.buildPostConnection(loginURL,params );
+            //InputStream stream = BuildConnections.buildConnection(URL + "&username=" + username + "&password=" + password);
             String json = IOUtils.toString(stream, ENCODING);
             System.out.println("String " + String.valueOf(json) + " " + json.getClass());
             JSONObject object = new JSONObject(json);

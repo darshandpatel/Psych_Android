@@ -18,30 +18,30 @@
 
 
     <string-array name="ethnicity_array">
-        <item>gender</item>
-        <item>male</item>
-        <item>female</item>
-        <item>choose not to disclose</item>
+        <item>Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Choose not to disclose</item>
     </string-array>
 
 
     <string-array name="education">
-        <item>education</item>
-        <item>high school</item>
-        <item>undergraduate</item>
-        <item>graduate</item>
-        <item>doctors</item>
-        <item>choose not to disclose</item>
+        <item>Education</item>
+        <item>High school</item>
+        <item>Undergraduate</item>
+        <item>Graduate</item>
+        <item>Doctorate</item>
+        <item>Choose not to disclose</item>
     </string-array>
 
 
     <string-array name="mobile_experience">
         <item>Mobile experience</item>
-        <item>new user</item>
-        <item>average</item>
-        <item>above average</item>
-        <item>expertise</item>
-        <item>choose not to disclose</item>
+        <item>New user</item>
+        <item>Average</item>
+        <item>Above average</item>
+        <item>Expertise</item>
+        <item>Choose not to disclose</item>
     </string-array>
 
 

@@ -25,8 +25,11 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Logger;
+
+import cz.msebera.android.httpclient.NameValuePair;
 
 public class Register extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemSelectedListener {
 
@@ -307,7 +310,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
         try {
             System.out.println("inside perfor registration");
             System.out.println("registrationCode"+regCode.getText().toString());
-        String url = URL + "?queryType=register&param=" + encodeString(username.getText().toString()) + "&param=" +
+            String url = URL + "?queryType=register&param=" + encodeString(username.getText().toString()) + "&param=" +
                     encodeString(password.getText().toString()) + "&param=" + (age.getSelectedItem().toString()) + "&param=" +
                     encodeString(ethnicity.getSelectedItem().toString()) + "&param=" + encodeString(gender.getSelectedItem().toString()) +
                     "&param=" + encodeString(disabiltiy.isChecked()+"") + "&param=" + encodeString(mobile_exp.getSelectedItem().toString()) +
@@ -316,8 +319,20 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
 
             System.out.println("Done "+url);
 
-
-            InputStream stream = BuildConnections.buildConnection(url);
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put(Constant.USERNAME, username.getText().toString());
+            params.put(Constant.PASSWORD, password.getText().toString());
+            params.put(Constant.AGE,age.getSelectedItem().toString());
+            params.put(Constant.ETHNICITY,ethnicity.getSelectedItem().toString());
+            params.put(Constant.GENDER,gender.getSelectedItem().toString());
+            params.put(Constant.DISABILITY,disabiltiy.isChecked()+"");
+            params.put(Constant.MOBILEEXPE,mobile_exp.getSelectedItem().toString());
+            params.put(Constant.PSYCOMEDS,psycoMeds.getText().toString());
+            params.put(Constant.COLOR,color.isChecked()+"");
+            params.put(Constant.EDUCATION,education.getSelectedItem().toString());
+            params.put(Constant.REGCODE,regCode.getText().toString());
+            //InputStream stream = BuildConnections.buildConnection(url);
+            InputStream stream = BuildConnections.buildPostConnection(url, params);
             final JSONObject object = BuildConnections.getJSOnObject(stream);
 
             String status = object.getString("status");
