@@ -387,6 +387,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             responses.add(response);
             //String answer = getAnswer(((SeekBar)edits[i]).getProgress());
         }
+
         results.put("responses", responses);
         results.put("userId", Integer.toString(ParameterFile.userID));
         results.put("sessionId", Integer.toString(ParameterFile.sessionID));

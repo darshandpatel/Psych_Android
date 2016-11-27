@@ -305,7 +305,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
         //return encodedString;
         return rawString;
     }
-
     public boolean performRegistration(Semaphore sema) {
         try {
             System.out.println("inside perfor registration");
