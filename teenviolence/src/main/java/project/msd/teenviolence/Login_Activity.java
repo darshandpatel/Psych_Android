@@ -160,7 +160,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
 
     public boolean isCorrectLogin(String username, String password) {
         try {
-            HashMap<String, String> params = new HashMap<String, String>();
+            HashMap<String, Object> params = new HashMap<String, Object>();
             params.put(Constant.USERNAME,username);
             params.put(Constant.PASSWORD,password);
             System.out.println(username+" "+password);

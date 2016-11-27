@@ -207,7 +207,9 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         edits = new View[nbrOfQuestion];
         questionsViews = new TextView[nbrOfQuestion];
         LinearLayout lLayout = null;
+        int count=0;
         for (int i = 0; i < nbrOfQuestion; i++) {
+                count++;
             lLayout = new LinearLayout(this);
             lLayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -219,9 +221,16 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             TextView tView = buildTextView(i, questionsArrayList.get(i).getquestionName(), lparams);
             View questionReplyView = null;
             if(questionsArrayList.get(i).getresponseType().equals("Categorical")){
-                questionReplyView = buildRadioGroupView(lparams, questionsArrayList.get(i).getstartLabel(),
+
+                questionReplyView = buildRadioGroupView(count,lparams, questionsArrayList.get(i).getstartLabel(),
                         questionsArrayList.get(i).getendLabel());
-            }else{
+
+
+
+            }
+
+            else{
+
                 questionReplyView = buildEditView(lparams);
             }
             //SeekBar eView =buildEditView(lparams);
@@ -242,9 +251,10 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         return bar;
     }
 
-    public RadioGroup buildRadioGroupView(ViewGroup.LayoutParams layoutParams,
+    public RadioGroup buildRadioGroupView(int count,ViewGroup.LayoutParams layoutParams,
                                           String startLabelStr,
                                           String endLabelStr) {
+
         RadioGroup rg = new RadioGroup(this);
         rg.setOrientation(RadioGroup.HORIZONTAL);
         rg.setLayoutParams(layoutParams);
@@ -254,8 +264,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         rg.addView(startLabel, layoutParams);
         rg.addView(endLabel, layoutParams);
         startLabel.setText(startLabelStr);
-        //startLabel.setId(startLabelStr.hashCode());
-        //startLabel.setId(endLabelStr.hashCode());
+        startLabel.setId(count++);
+        endLabel.setId(count++);
         startLabel.setSelected(true);
         startLabel.setTextColor(Color.WHITE);
         endLabel.setTextColor(Color.WHITE);
@@ -285,14 +295,22 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             JSONObject object = null;
             try {
 
+                System.out.println("params: " + params.toString());
+                System.out.println("params length: " +  params.length);
+                for (String key: params[0].keySet()){
+                    System.out.println(key + ": " + params[0].get(key));
+                }
+
                 //String feedback = params[0];
                 //System.out.println("feedback " + feedback);
-                InputStream stream = BuildConnections.buildPostConnection(QUESTION_URL+"/Question", params);
+                InputStream stream = BuildConnections.buildPostConnection(QUESTION_URL+"Questionnaire", params[0]);
                 //InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
                 object = BuildConnections.getJSOnObject(stream);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            //System.out.println("params: " + params.toString());
             return object;
 
         }
@@ -350,7 +368,9 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     public HashMap<String, Object> getResults() {
 
         HashMap<String, Object> results = new HashMap<String, Object>();
+
         ArrayList<HashMap<String, String>> responses = new ArrayList<HashMap<String, String>>();
+
         for (int i = 0; i < questionsViews.length; i++) {
             HashMap<String, String> response = new HashMap<String, String>();
             response.put("questionId", questionsArrayList.get(i).getquestionId());
@@ -358,7 +378,10 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 response.put("response",Integer.toString(((SeekBar)edits[i]).getProgress()));
                 response.put("responseType", "Continuous");
             }else{
-                response.put("response",Integer.toString(((SeekBar)edits[i]).getProgress()));
+                // Extract which button is selected
+                // Google how to extract which button is selected for the given radioGroup.
+                RadioButton temp = (RadioButton)((RadioGroup)edits[i]).findViewById(((RadioGroup)edits[i]).getCheckedRadioButtonId());
+                response.put("response",temp.getText().toString());
                 response.put("responseType", "Categorical");
             }
             responses.add(response);

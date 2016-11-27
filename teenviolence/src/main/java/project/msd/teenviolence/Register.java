@@ -319,7 +319,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
 
             System.out.println("Done "+url);
 
-            HashMap<String, String> params = new HashMap<String, String>();
+            HashMap<String, Object> params = new HashMap<String, Object>();
             params.put(Constant.USERNAME, username.getText().toString());
             params.put(Constant.PASSWORD, password.getText().toString());
             params.put(Constant.AGE,age.getSelectedItem().toString());
