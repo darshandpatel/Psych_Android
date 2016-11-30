@@ -39,7 +39,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     Object[] datatype;
     int temp[]=new int[5];
     //static final String URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/registration/Register";
-    static final String URL = "http://10.0.2.2:8080/Psych-1/registration/Register";
+    static final String URL = Constant.SERVER_ADDRESS+"registration/Register";
     Spinner age, gender, ethnicity, mobile_exp, education;
     EditText username, password, psycoMeds, regCode;
     CheckBox disabiltiy, color;

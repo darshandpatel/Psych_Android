@@ -49,8 +49,8 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     //static String ADDRESS = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
    // static String ADDRESS = "http://10.0.2.2:8080/TeenViolenceServer2/";
 
-    static String ADDRESS = "http://10.0.2.2:8080/Psych-1/";
-
+    //static String ADDRESS = "http://10.0.2.2:8080/Psych-1/";
+    static String ADDRESS = Constant.SERVER_ADDRESS;
     static boolean isDownloadComplete = false;
 
     final String URL = ADDRESS + "AuthenticatingUser?queryType=login";
@@ -174,11 +174,13 @@ public class Login_Activity extends Activity implements View.OnClickListener {
                 ParameterFile.userName=userName.getText().toString();
                 ParameterFile.QuestionSession=0;
                 ParameterFile.userID = Integer.parseInt(object.getString("userId"));
+                ParameterFile.sessionID = Integer.parseInt(object.getString("sessionId"));
+                ParameterFile.targetGroupID = Integer.parseInt(object.getString("targetGroupId"));
                 new FetchParameter().execute();
                 return true;
             } else
 
-            
+
                 return false;
 
 

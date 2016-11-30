@@ -40,6 +40,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 public class Questions extends AppCompatActivity implements View.OnClickListener {
@@ -53,7 +55,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     boolean isQuestion;
     //final static String QUESTION_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
     //final static String QUESTION_URL = "http://10.0.2.2:8080/TeenViolenceServer2/questionnaire/Questionnaire";
-    final static String QUESTION_URL = "http://10.0.2.2:8080/Psych-1/";
+    //final static String QUESTION_URL = "http://10.0.2.2:8080/Psych-1/";
+   // final static String QUESTION_URL = "http://ec2-54-166-55-193.compute-1.amazonaws.com:8080/Psych-1/";
     static Questions questions = null;
     Semaphore semaphore = new Semaphore(0, true);
     ProgressDialog progressDialog = null;
@@ -127,8 +130,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
 
             try {
-                InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "" +
-                        "question?targetGroupId=1");
+                InputStream stream = BuildConnections.buildConnection(Constant.SERVER_ADDRESS + "" +
+                        "question?targetGroupId="+ParameterFile.targetGroupID);
 
                 JSONObject object = BuildConnections.getJSOnObject(stream);
 
@@ -289,6 +292,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     }
 
 
+
     class SendFeedback extends AsyncTask<HashMap<String, Object>, Void, JSONObject> {
 
         protected JSONObject doInBackground(HashMap<String, Object>... params) {
@@ -302,8 +306,11 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 }
 
                 //String feedback = params[0];
+                HashMap<String, Object> checkmap = new HashMap<String, Object>();
+                checkmap.put("response","somedata");
+
                 //System.out.println("feedback " + feedback);
-                InputStream stream = BuildConnections.buildPostConnection(QUESTION_URL+"Questionnaire", params[0]);
+                InputStream stream = BuildConnections.buildPostConnection(Constant.SERVER_ADDRESS+"Questionnaire", params[0]);
                 //InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
                 object = BuildConnections.getJSOnObject(stream);
             } catch (Exception e) {
@@ -326,7 +333,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                         createNewActivity(HomeScreen.class, "Thanks for playing\n" + ParameterFile.userName);
                     } else {
 
-
                         if (demoPlayed) {
                             startNewActivity(PlayDemo.class);
                         } else {
@@ -340,6 +346,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             }
         }
     }
+
+
 
     public void buildAlertDialog(String message) {
 
@@ -365,11 +373,31 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         Questions.this.startActivity(intent);
     }
 
+    public static String convertHMToString(HashMap<String, String> hashMap){
+
+        Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
+        StringBuilder str = new StringBuilder();
+        str.append("{");
+        while(iterator.hasNext()){
+            Map.Entry<String, String> pair = iterator.next();
+
+            str.append("\""+pair.getKey()+"\":");
+            str.append("\""+pair.getValue()+"\"");
+            str.append(",");
+        }
+        int length = str.length();
+        str.deleteCharAt(length-1);
+        str.append("}");
+        return str.toString();
+    }
+
+
     public HashMap<String, Object> getResults() {
+
 
         HashMap<String, Object> results = new HashMap<String, Object>();
 
-        ArrayList<HashMap<String, String>> responses = new ArrayList<HashMap<String, String>>();
+        ArrayList<String> responses = new ArrayList<String>();
 
         for (int i = 0; i < questionsViews.length; i++) {
             HashMap<String, String> response = new HashMap<String, String>();
@@ -384,14 +412,14 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 response.put("response",temp.getText().toString());
                 response.put("responseType", "Categorical");
             }
-            responses.add(response);
+            responses.add(convertHMToString(response));
             //String answer = getAnswer(((SeekBar)edits[i]).getProgress());
         }
-
+        // okay
         results.put("responses", responses);
         results.put("userId", Integer.toString(ParameterFile.userID));
         results.put("sessionId", Integer.toString(ParameterFile.sessionID));
-        results.put("sessionDate",(new Date()).toString());
+        //results.put("sessionDate",(new Date()).toString());
         results.put("questionSession",Integer.toString(ParameterFile.QuestionSession));
         //return questions + answers + "&userID=" + ParameterFile.userID + "&sessionID=" + ParameterFile.sessionID +
         //        "&sessionDate=" + (new Date()).toString() + "&questionSession=" + ParameterFile.QuestionSession;

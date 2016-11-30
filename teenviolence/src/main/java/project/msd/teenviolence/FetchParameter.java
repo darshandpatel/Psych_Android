@@ -34,7 +34,6 @@ public class FetchParameter extends AsyncTask<Void,Void,JSONObject> {
         }
         try {
 
-
             ParameterFile.sessionID = Integer.parseInt(object.getString("sessionID"));
             ParameterFile.positiveColor = object.getString("positiveColor");
             ParameterFile.negativeColor = object.getString("negativeColor");
