@@ -175,7 +175,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
                 ParameterFile.QuestionSession=0;
                 ParameterFile.userID = Integer.parseInt(object.getString("userId"));
                 ParameterFile.sessionID = Integer.parseInt(object.getString("sessionId"));
-                ParameterFile.targetGroupID = Integer.parseInt(object.getString("targetGroupId"));
+              //  ParameterFile.targetGroupID = Integer.parseInt(object.getString("targetGroupId"));
                 new FetchParameter().execute();
                 return true;
             } else
