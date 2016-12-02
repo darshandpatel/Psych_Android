@@ -173,10 +173,14 @@ public class Login_Activity extends Activity implements View.OnClickListener {
             if (object.getString("success").equalsIgnoreCase("1")) {
                 ParameterFile.userName=userName.getText().toString();
                 ParameterFile.QuestionSession=0;
-                ParameterFile.userID = Integer.parseInt(object.getString("userId"));
-                ParameterFile.sessionID = Integer.parseInt(object.getString("sessionId"));
-              //  ParameterFile.targetGroupID = Integer.parseInt(object.getString("targetGroupId"));
-                new FetchParameter().execute();
+                ParameterFile.participantId = Long.parseLong(object.getString(Constant.USER_ID));
+                ParameterFile.userID = Integer.parseInt(object.getString(Constant.USER_ID));
+                //ParameterFile.sessionID = Integer.parseInt(object.getString("sessionId"));
+                ParameterFile.tgId = Long.parseLong(object.getString(Constant.TG_ID));
+                System.out.println("participantId id : " +ParameterFile.participantId);
+                System.out.println("userID id : " +ParameterFile.userID);
+                System.out.println("tgId : " +ParameterFile.tgId);
+                //new FetchParameter().execute();
                 return true;
             } else
 

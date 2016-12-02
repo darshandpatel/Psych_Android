@@ -20,8 +20,14 @@ public class Constant {
     public static String COLOR = "color";
     public static String EDUCATION = "education";
     public static String REGCODE = "regCode";
-
-
+    public static String USER_ID = "userId";
+    public static String TG_ID = "tgId";
+    public static String TARGET_GROUP_ID = "targetGroupId";
+    public static String SOURCE = "source";
+    public static String ANDROID = "android";
+    public static String PARTICIPANTID = "participantId";
+    public static String RESPONSES = "responses";
+    public static String SESSION_ID = "sessionId";
 
 }
 

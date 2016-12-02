@@ -6,15 +6,14 @@ package project.msd.teenviolence;
 public class ParameterFile implements java.io.Serializable {
     static long time=5*((long)Math.pow(10,9));
     static int totalGames=6;
-    static int userID=-1;
-    static int sessionID=-1;
+    static long participantId=-1;
     static String positiveColor="#";
     static String negativeColor="#";
     static boolean isGamePlayed=false;
     static int QuestionSession=0;
     static String userName="";
-    static int targetGroupID=-1;
-
-
+    static long tgId=0; // Target Group ID
+    static int userID=0;
+    static int sessionID=0;
 
 }

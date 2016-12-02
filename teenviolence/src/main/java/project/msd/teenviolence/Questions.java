@@ -131,7 +131,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
             try {
                 InputStream stream = BuildConnections.buildConnection(Constant.SERVER_ADDRESS + "" +
-                        "question?targetGroupId="+ParameterFile.targetGroupID);
+                        "question?"+Constant.TARGET_GROUP_ID+"="+ParameterFile.tgId+"&"+Constant.SOURCE+"="+Constant.ANDROID);
 
                 JSONObject object = BuildConnections.getJSOnObject(stream);
 
@@ -306,8 +306,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 }
 
                 //String feedback = params[0];
-                HashMap<String, Object> checkmap = new HashMap<String, Object>();
-                checkmap.put("response","somedata");
 
                 //System.out.println("feedback " + feedback);
                 InputStream stream = BuildConnections.buildPostConnection(Constant.SERVER_ADDRESS+"Questionnaire", params[0]);
@@ -416,11 +414,13 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             //String answer = getAnswer(((SeekBar)edits[i]).getProgress());
         }
         // okay
-        results.put("responses", responses);
-        results.put("userId", Integer.toString(ParameterFile.userID));
-        results.put("sessionId", Integer.toString(ParameterFile.sessionID));
+        results.put(Constant.RESPONSES, responses);
+        results.put(Constant.USER_ID, Integer.toString(ParameterFile.userID));
+        results.put(Constant.TG_ID, Long.toString(ParameterFile.tgId));
+        results.put(Constant.PARTICIPANTID, Long.toString(ParameterFile.participantId));
+        results.put(Constant.SESSION_ID, Integer.toString(ParameterFile.sessionID));
         //results.put("sessionDate",(new Date()).toString());
-        results.put("questionSession",Integer.toString(ParameterFile.QuestionSession));
+        //results.put("questionSession",Integer.toString(ParameterFile.QuestionSession));
         //return questions + answers + "&userID=" + ParameterFile.userID + "&sessionID=" + ParameterFile.sessionID +
         //        "&sessionDate=" + (new Date()).toString() + "&questionSession=" + ParameterFile.QuestionSession;
         return results;
