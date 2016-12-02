@@ -143,7 +143,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                     dialog.dismiss();
 
                     paintInPostExecuteNeeded = false;
-                    startTime = System.nanoTime();
+                    startTime = System.currentTimeMillis();
                     checkImagePainted = true;
 
                 }
@@ -269,13 +269,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
         TestSubjectResults results = testSubjectResults.get(nextCounter-1);
 
-        double time=(System.nanoTime()-startTime)/(Math.pow(10,9));
+        //double time=(System.currentTimeMillis()-startTime)/(Math.pow(10,9));
+        double time=(System.currentTimeMillis()-startTime);
 
 
         try{
             if (e1.getY() - e2.getY() <- 10) {
                 fingerSwipedUp();
-                if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
+                if((time)>results.displayTime && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
 
                     unattemptedQuestions++;
                     semaphore.release();
@@ -285,13 +286,14 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
 
                 results.correctness = results.isPositive == true ? true : false;
-                endTime = System.nanoTime();
-                results.time = (endTime - startTime);
+                //endTime = System.nanoTime();
+                endTime = System.currentTimeMillis();
+                results.responseTime = (endTime - startTime);
 
             }
             if (e1.getY() - e2.getY() > 10) {
                 fingerSwipeDown();
-                if((time)>ParameterFile.time && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
+                if((time)>results.displayTime && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
 
                     unattemptedQuestions++;
                     semaphore.release();
@@ -302,8 +304,9 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
                 results.correctness = results.isPositive == false ? true : false;
 
-                endTime = System.nanoTime();
-                results.time = (endTime - startTime);
+                //endTime = System.nanoTime();
+                endTime = System.currentTimeMillis();
+                results.responseTime = (endTime - startTime);
             }}catch (Exception e){
             e.printStackTrace();
         }

@@ -63,7 +63,8 @@ public class SendFeedback extends AsyncTask<Void, Void, Void> {
             HashMap<String, String> response = new HashMap<String, String>();
             getCorrect_IncorrectResponses(result);
             //DecimalFormat df = new DecimalFormat("0.00");
-            PlayGame.totalTimeTaken += ((result.time) / Math.pow(10, 6));
+            PlayGame.totalTimeTaken += (result.responseTime);
+            /// Math.pow(10, 6));
             //String isAttempted = result.isAttempted + "";
             //String time = df.format((result.time) / Math.pow(10, 6)) + " secs";
             //String isPositive = result.isPositive + "";
@@ -79,7 +80,7 @@ public class SendFeedback extends AsyncTask<Void, Void, Void> {
             response.put(Constant.IMAGE_TYPE_ID,Long.toString(result.imageTypeId));
             response.put(Constant.IMAGE_ID,Long.toString(result.imageId));
             response.put(Constant.CORRECTNESS,Boolean.toString(result.correctness));
-            response.put(Constant.TIME,Long.toString(result.time));
+            response.put(Constant.RESPONSE_TIME,Long.toString(result.responseTime));
             response.put(Constant.BACKGROUND_COLOR,result.backgroundColor);
             response.put(Constant.IS_ATTEMPTED,Boolean.toString(result.isAttempted));
 

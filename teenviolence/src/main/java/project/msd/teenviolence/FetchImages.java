@@ -23,10 +23,6 @@ public class FetchImages implements Runnable {
 
     static RequestQueue requestQueue = null;
     static Semaphore semaphore = new Semaphore(0, true);
-    //final static String POSITIVE_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
-    final static String POSITIVE_URL = "http://10.0.2.2:8080/TeenViolenceServer2/ImageFetcher";
-    //final static String NEGATIVE_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/ImageFetcher";
-    final static String NEGATIVE_URL = "http://10.0.2.2:8080/TeenViolenceServer2/ImageFetcher";
     final static Random random = new Random();
 
     Long imageCategoryId;
@@ -84,7 +80,7 @@ public class FetchImages implements Runnable {
                     temp.isPositive = false;
                 }
                 temp.image = image;
-                temp.time = this.displayTime;
+                temp.displayTime = this.displayTime;
                 temp.imageCategoryId= this.imageCategoryId;
                 temp.imageId = this.imageId;
                 temp.imageTypeId = this.imageTypeId;
