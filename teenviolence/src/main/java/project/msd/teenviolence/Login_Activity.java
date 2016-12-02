@@ -180,7 +180,7 @@ public class Login_Activity extends Activity implements View.OnClickListener {
                 System.out.println("participantId id : " +ParameterFile.participantId);
                 System.out.println("userID id : " +ParameterFile.userID);
                 System.out.println("tgId : " +ParameterFile.tgId);
-                //new FetchParameter().execute();
+                //new FetchImageParameter().execute();
                 return true;
             } else
 

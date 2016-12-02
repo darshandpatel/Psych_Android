@@ -333,7 +333,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                     if (ParameterFile.QuestionSession == 1) {
                         createNewActivity(HomeScreen.class, "Thanks for playing\n" + ParameterFile.userName);
                     } else {
-
+                        new FetchImageParameter().execute();
                         if (demoPlayed) {
                             startNewActivity(PlayDemo.class);
                         } else {

@@ -1,15 +1,10 @@
 package project.msd.teenviolence;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -22,11 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -51,7 +42,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     PlayGame that = null;
     static long startTime = 0, endTime = 0;
     static int correctResponses = 0;
-    static ArrayList<TestSubjectResults> testSubjectResults = new ArrayList<TestSubjectResults>(); ;
+    static ArrayList<TestSubjectResults> testSubjectResults = new ArrayList<TestSubjectResults>();
     static Thread thread=null;
     ProgressDialog dialog = null;
     private Animation animZoomIn = null;
@@ -168,7 +159,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
         while (!gameOver) {
 
-            if (nextCounter>= ParameterFile.totalGames) {
+            //if (nextCounter>= ParameterFile.totalGames) {
+            if (nextCounter>= PlayGame.testSubjectResults.size()) {
                 gameOver=true;
 
                 buildReport();
@@ -230,7 +222,8 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     }
 
     public void checkForNextImage() {
-        if (nextCounter < ParameterFile.totalGames) {
+        //if (nextCounter < ParameterFile.totalGames) {
+        if (nextCounter < PlayGame.testSubjectResults.size()) {
             if (nextCounter-1 <testSubjectResults.size() - 1) {
                 nextImageNeeded = true;
             } else {
@@ -254,7 +247,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         new SendFeedback(semaphore).execute();
         gameOver=true;
         nextCounter = 0;
-        new FetchParameter().execute();
+        new FetchImageParameter().execute();
         testSubjectResults.clear();
         testSubjectResults = new ArrayList<TestSubjectResults>();
         ParameterFile.QuestionSession=1;

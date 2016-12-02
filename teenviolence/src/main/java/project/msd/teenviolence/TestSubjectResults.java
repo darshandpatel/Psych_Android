@@ -7,6 +7,10 @@ import android.graphics.Bitmap;
  */
 public class TestSubjectResults {
 
+    public Long imageId=null;
+    public Long imageCategoryId=null;
+    public Long imageTypeId=null;
+    public String imageURL="";
     public Bitmap image=null;
     public boolean isPositive=false;
     public long time=3;

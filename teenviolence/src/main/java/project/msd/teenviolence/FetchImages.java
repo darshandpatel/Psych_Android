@@ -29,48 +29,66 @@ public class FetchImages implements Runnable {
     final static String NEGATIVE_URL = "http://10.0.2.2:8080/TeenViolenceServer2/ImageFetcher";
     final static Random random = new Random();
 
+    Long imageCategoryId;
+    Long imageTypeId;
+    String imageType;
+    Long displayTime;
+    String imagePath;
+    String imageURL;
+    Long imageId;
 
+    public FetchImages(Long imageCategoryId, Long imageTypeId, String imageType, Long displayTime,
+                       String imagePath, String imageURL, Long imageId){
+        this.imageCategoryId = imageCategoryId;
+        this.imageTypeId = imageTypeId;
+        this.imageType = imageType;
+        this.displayTime = displayTime;
+        this.imagePath = imagePath;
+        this.imageURL = imageURL;
+        this.imageId = imageId;
+    }
     public void run() {
-        boolean check;
-        {
-            double start = System.nanoTime();
-            check = random.nextInt(2) == 1 ? true : false;
-            fetchImage(check);
+        fetchImage();
+        //boolean check;
+        //{
+            //double start = System.nanoTime();
+            //check = random.nextInt(2) == 1 ? true : false;
+            //fetchImage(check);
 
-        }
+
+        //}
     }
 
 
-    protected void fetchImage(boolean isPositive) {
+    protected void fetchImage() {
         String color = "";
-        //get the image
-        String urlToFetchImage = null;
-        if (isPositive) {
-            urlToFetchImage = POSITIVE_URL + "?param1=positive";
-            color = ParameterFile.positiveColor;
-        } else {
-            urlToFetchImage = NEGATIVE_URL + "?param1=negative";
-            color = ParameterFile.negativeColor;
-        }
         InputStream stream = null;
         try {
-
-            stream = BuildConnections.buildConnection(urlToFetchImage);
-
+            //get the image
+            stream = BuildConnections.buildConnection(this.imageURL);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
         synchronized (PlayGame.testSubjectResults) {
-        if(stream!=null && PlayGame.testSubjectResults.size()<=ParameterFile.totalGames ) {
-            Bitmap image = BitmapFactory.decodeStream(stream, null, options);
-            TestSubjectResults temp = new TestSubjectResults();
-            temp.backgroundColor = color;
-            temp.image = image;
-            temp.isPositive = isPositive;
-            temp.time = ParameterFile.time;
-            PlayGame.testSubjectResults.add(temp);
+            //if(stream!=null && PlayGame.testSubjectResults.size()<=ParameterFile.totalGames ) {
+            if(stream!=null){
+                Bitmap image = BitmapFactory.decodeStream(stream, null, options);
+                TestSubjectResults temp = new TestSubjectResults();
+                if(this.imageType.equals(Constant.POSITIVE)){
+                    temp.backgroundColor = ParameterFile.positiveColor;
+                    temp.isPositive = true;
+                }else{
+                    temp.backgroundColor = ParameterFile.negativeColor;
+                    temp.isPositive = false;
+                }
+                temp.image = image;
+                temp.time = this.displayTime;
+                temp.imageCategoryId= this.imageCategoryId;
+                temp.imageId = this.imageId;
+                temp.imageTypeId = this.imageTypeId;
+                PlayGame.testSubjectResults.add(temp);
             }
         }
 
