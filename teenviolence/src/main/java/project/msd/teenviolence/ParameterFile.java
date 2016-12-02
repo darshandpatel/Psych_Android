@@ -13,7 +13,7 @@ public class ParameterFile implements java.io.Serializable {
     static int QuestionSession=0;
     static String userName="";
     static long tgId=0; // Target Group ID
-    static int userID=0;
-    static int sessionID=0;
+    static long userID=0;
+    static long sessionID=0;
 
 }

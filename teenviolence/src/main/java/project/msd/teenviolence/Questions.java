@@ -311,6 +311,9 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 InputStream stream = BuildConnections.buildPostConnection(Constant.SERVER_ADDRESS+"Questionnaire", params[0]);
                 //InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);
                 object = BuildConnections.getJSOnObject(stream);
+                ParameterFile.positiveColor = object.getString(Constant.POSITIVE_COLOR);
+                ParameterFile.negativeColor = object.getString(Constant.NEGATIVE_COLOR);
+                ParameterFile.sessionID = object.getLong(Constant.SESSION_ID);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -415,10 +418,10 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         }
         // okay
         results.put(Constant.RESPONSES, responses);
-        results.put(Constant.USER_ID, Integer.toString(ParameterFile.userID));
+        results.put(Constant.USER_ID, Long.toString(ParameterFile.userID));
         results.put(Constant.TG_ID, Long.toString(ParameterFile.tgId));
         results.put(Constant.PARTICIPANTID, Long.toString(ParameterFile.participantId));
-        results.put(Constant.SESSION_ID, Integer.toString(ParameterFile.sessionID));
+        results.put(Constant.SESSION_ID, Long.toString(ParameterFile.sessionID));
         //results.put("sessionDate",(new Date()).toString());
         //results.put("questionSession",Integer.toString(ParameterFile.QuestionSession));
         //return questions + answers + "&userID=" + ParameterFile.userID + "&sessionID=" + ParameterFile.sessionID +

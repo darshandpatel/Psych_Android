@@ -28,6 +28,8 @@ public class Constant {
     public static String PARTICIPANTID = "participantId";
     public static String RESPONSES = "responses";
     public static String SESSION_ID = "sessionId";
+    public static String POSITIVE_COLOR = "positiveColor";
+    public static String NEGATIVE_COLOR = "negativeColor";
 
 }
 
