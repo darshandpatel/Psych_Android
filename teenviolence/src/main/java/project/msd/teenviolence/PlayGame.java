@@ -250,7 +250,6 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
         testSubjectResults.clear();
         testSubjectResults = new ArrayList<TestSubjectResults>();
         ParameterFile.QuestionSession=1;
-        ParameterFile.sessionID=0;
         Intent intent=new Intent(PlayGame.this,Questions.class);
         intent.putExtra("isQuestion",true);
         PlayGame.this.startActivity(intent);
