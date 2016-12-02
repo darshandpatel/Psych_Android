@@ -306,7 +306,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 }
 
                 //String feedback = params[0];
-
                 //System.out.println("feedback " + feedback);
                 InputStream stream = BuildConnections.buildPostConnection(Constant.SERVER_ADDRESS+"Questionnaire", params[0]);
                 //InputStream stream = BuildConnections.buildConnection(QUESTION_URL + "?requestType=feedback" + feedback);

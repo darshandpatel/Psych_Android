@@ -184,7 +184,6 @@ public class Login_Activity extends Activity implements View.OnClickListener {
                 return true;
             } else
 
-
                 return false;
 
 

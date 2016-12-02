@@ -39,6 +39,10 @@ public class Constant {
     public static String IMAGE_ID = "imageId";
     public static String POSITIVE = "Positive";
     public static String NEGATIVE = "Negative";
+    public static String BACKGROUND_COLOR = "backGroundColor";
+    public static String TIME = "time";
+    public static String CORRECTNESS = "correctness";
+    public static String IS_ATTEMPTED = "isAttempted";
 
 }
 

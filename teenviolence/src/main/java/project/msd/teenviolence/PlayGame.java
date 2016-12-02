@@ -241,16 +241,16 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
     public void buildReport(){
 
         totalQuestions=testSubjectResults.size();
-
         ParameterFile.isGamePlayed=true;
         Semaphore semaphore=new Semaphore(0,true);
         new SendFeedback(semaphore).execute();
         gameOver=true;
         nextCounter = 0;
-        new FetchImageParameter().execute();
+        //new FetchImageParameter().execute();
         testSubjectResults.clear();
         testSubjectResults = new ArrayList<TestSubjectResults>();
         ParameterFile.QuestionSession=1;
+        ParameterFile.sessionID=0;
         Intent intent=new Intent(PlayGame.this,Questions.class);
         intent.putExtra("isQuestion",true);
         PlayGame.this.startActivity(intent);
@@ -285,7 +285,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
 
 
-                results.responseAccurate = results.isPositive == true ? true : false;
+                results.correctness = results.isPositive == true ? true : false;
                 endTime = System.nanoTime();
                 results.time = (endTime - startTime);
 
@@ -301,7 +301,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
 
                 }
 
-                results.responseAccurate = results.isPositive == false ? true : false;
+                results.correctness = results.isPositive == false ? true : false;
 
                 endTime = System.nanoTime();
                 results.time = (endTime - startTime);
