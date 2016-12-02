@@ -228,8 +228,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                 questionReplyView = buildRadioGroupView(count,lparams, questionsArrayList.get(i).getstartLabel(),
                         questionsArrayList.get(i).getendLabel());
 
-
-
             }
 
             else{
@@ -421,6 +419,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         results.put(Constant.TG_ID, Long.toString(ParameterFile.tgId));
         results.put(Constant.PARTICIPANTID, Long.toString(ParameterFile.participantId));
         results.put(Constant.SESSION_ID, Long.toString(ParameterFile.sessionID));
+        results.put(Constant.QUESTION_SESSION, ParameterFile.QuestionSession);
+
         //results.put("sessionDate",(new Date()).toString());
         //results.put("questionSession",Integer.toString(ParameterFile.QuestionSession));
         //return questions + answers + "&userID=" + ParameterFile.userID + "&sessionID=" + ParameterFile.sessionID +

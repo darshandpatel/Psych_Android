@@ -43,6 +43,7 @@ public class Constant {
     public static String TIME = "time";
     public static String CORRECTNESS = "correctness";
     public static String IS_ATTEMPTED = "isAttempted";
+    public static String QUESTION_SESSION = "questionSession";
 
 }
 

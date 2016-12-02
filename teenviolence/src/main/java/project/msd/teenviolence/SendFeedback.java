@@ -75,7 +75,6 @@ public class SendFeedback extends AsyncTask<Void, Void, Void> {
             //        Register.encodeString(bgColor) + "&param=" +
             //        Register.encodeString(correctness) + "&param=" + userID;
             response.put(Constant.PARTICIPANTID, Long.toString(ParameterFile.participantId));
-            response.put(Constant.SESSION_ID,Long.toString(ParameterFile.sessionID));
             response.put(Constant.IMAGE_CATEGORY_ID,Long.toString(result.imageCategoryId));
             response.put(Constant.IMAGE_TYPE_ID,Long.toString(result.imageTypeId));
             response.put(Constant.IMAGE_ID,Long.toString(result.imageId));
@@ -91,6 +90,7 @@ public class SendFeedback extends AsyncTask<Void, Void, Void> {
             HashMap<String, Object> hashMap = new HashMap<String, Object>();
             hashMap.put(Constant.RESPONSES, imageResponses);
             hashMap.put(Constant.PARTICIPANTID, ParameterFile.participantId);
+            hashMap.put(Constant.SESSION_ID,ParameterFile.sessionID);
             BuildConnections.buildPostConnection(Constant.SERVER_ADDRESS+"imageData/ImageDataServlet", hashMap);
         } catch (Exception e) {
             e.printStackTrace();
