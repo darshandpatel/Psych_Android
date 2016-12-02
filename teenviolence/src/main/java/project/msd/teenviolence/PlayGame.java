@@ -125,7 +125,9 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             runOnUiThread(new Runnable() {
                 public void run() {
                     view.startAnimation(animNormal);
-
+                    System.out.println("----------------------------");
+                    System.out.println(testSubjectResults.size());
+                    System.out.println(nextCounter);
                     if (testSubjectResults.get(nextCounter).isPositive) {
                         if (testSubjectResults.get(nextCounter).backgroundColor.equalsIgnoreCase("#"))
                             testSubjectResults.get(nextCounter).backgroundColor = ParameterFile.positiveColor;
@@ -277,9 +279,9 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             if (e1.getY() - e2.getY() <- 10) {
                 fingerSwipedUp();
                 if((time)>results.displayTime && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
-
+                    System.out.print("More than allocated time");
                     unattemptedQuestions++;
-                    semaphore.release();
+                    //semaphore.release();
                     return false;
                 }
 
@@ -294,9 +296,9 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
             if (e1.getY() - e2.getY() > 10) {
                 fingerSwipeDown();
                 if((time)>results.displayTime && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
-
+                    System.out.print("More than allocated time");
                     unattemptedQuestions++;
-                    semaphore.release();
+                    //semaphore.release();
 
                     return false;
 
