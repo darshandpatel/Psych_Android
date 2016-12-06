@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -232,7 +233,9 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
             else{
 
-                questionReplyView = buildEditView(lparams);
+                questionReplyView = buildEditView(lparams, questionsArrayList.get(i).getstartLabel(),
+                        questionsArrayList.get(i).getendLabel());
+                //
             }
             //SeekBar eView =buildEditView(lparams);
             lLayout.addView(tView);
@@ -244,23 +247,68 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     }
 
 
-    public SeekBar buildEditView(ViewGroup.LayoutParams layoutParams) {
+    public LinearLayout buildEditView(ViewGroup.LayoutParams layoutParams,
+                                      String startLabelStr,
+                                      String endLabelStr) {
+
+        LinearLayout lLayout = new LinearLayout(this);
+        lLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lparams.weight = 1f;
+        lparams.setMargins(0, 10, 0, 0);
+
         SeekBar bar = new SeekBar(this);
         bar.setMax(5);
         bar.setBackground(getDrawable(R.drawable.edit_text));
         bar.setLayoutParams(layoutParams);
-        return bar;
+
+        lLayout.addView(bar);
+
+
+        RelativeLayout labelLayout = new RelativeLayout(this);
+        //labelLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        //params.addRule(RelativeLayout.LEFT_OF, R.id.id_to_be_left_of);
+
+        TextView label_left = new TextView(this);
+        label_left.setTextColor(Color.WHITE);
+        label_left.setLayoutParams(layoutParams);
+        label_left.setText(startLabelStr);
+
+        TextView label_right = new TextView(this);
+        label_right.setTextColor(Color.WHITE);
+        label_right.setLayoutParams(params);
+        label_right.setText(endLabelStr);
+
+
+
+        //labelLayout.addView(label_left);
+        //labelLayout.addView(label_right);
+
+        labelLayout.addView(label_left);
+        labelLayout.addView(label_right);
+        lLayout.addView(labelLayout);
+
+
+
+        return lLayout;
     }
 
     public RadioGroup buildRadioGroupView(int count,ViewGroup.LayoutParams layoutParams,
                                           String startLabelStr,
                                           String endLabelStr) {
 
+
         RadioGroup rg = new RadioGroup(this);
-        rg.setOrientation(RadioGroup.HORIZONTAL);
+        rg.setOrientation(RadioGroup.VERTICAL);
         rg.setLayoutParams(layoutParams);
 
         RadioButton startLabel  = new RadioButton(this);
+        //startLabel.button
         RadioButton endLabel  = new RadioButton(this);
         rg.addView(startLabel, layoutParams);
         rg.addView(endLabel, layoutParams);

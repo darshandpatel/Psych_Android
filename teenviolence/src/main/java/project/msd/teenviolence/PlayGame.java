@@ -281,14 +281,13 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                 if((time)>results.displayTime && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
                     System.out.print("More than allocated time");
                     unattemptedQuestions++;
-                    //semaphore.release();
+                    semaphore.release();
                     return false;
                 }
 
-
-
                 results.correctness = results.isPositive == true ? true : false;
                 //endTime = System.nanoTime();
+                results.isAttempted=true;
                 endTime = System.currentTimeMillis();
                 results.responseTime = (endTime - startTime);
 
@@ -298,7 +297,7 @@ public class PlayGame extends Activity implements GestureDetector.OnGestureListe
                 if((time)>results.displayTime && nextCounter>0 && ((nextCounter-1) < (testSubjectResults.size() - 1))){
                     System.out.print("More than allocated time");
                     unattemptedQuestions++;
-                    //semaphore.release();
+                    semaphore.release();
 
                     return false;
 
