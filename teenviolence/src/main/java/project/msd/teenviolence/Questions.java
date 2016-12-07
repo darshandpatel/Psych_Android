@@ -54,10 +54,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
     TextView[] questionsViews;
 
     boolean isQuestion;
-    //final static String QUESTION_URL = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/questionnaire/Questionnaire";
-    //final static String QUESTION_URL = "http://10.0.2.2:8080/TeenViolenceServer2/questionnaire/Questionnaire";
-    //final static String QUESTION_URL = "http://10.0.2.2:8080/Psych-1/";
-   // final static String QUESTION_URL = "http://ec2-54-166-55-193.compute-1.amazonaws.com:8080/Psych-1/";
     static Questions questions = null;
     Semaphore semaphore = new Semaphore(0, true);
     ProgressDialog progressDialog = null;
@@ -211,7 +207,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         edits = new View[nbrOfQuestion];
         questionsViews = new TextView[nbrOfQuestion];
         LinearLayout lLayout = null;
-        int count=0;
+        int count=112310;
         for (int i = 0; i < nbrOfQuestion; i++) {
                 count++;
             lLayout = new LinearLayout(this);
@@ -234,7 +230,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             else{
 
                 questionReplyView = buildEditView(lparams, questionsArrayList.get(i).getstartLabel(),
-                        questionsArrayList.get(i).getendLabel());
+                        questionsArrayList.get(i).getendLabel(), questionsArrayList.get(i).getquestionId());
                 //
             }
             //SeekBar eView =buildEditView(lparams);
@@ -249,7 +245,8 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
 
     public LinearLayout buildEditView(ViewGroup.LayoutParams layoutParams,
                                       String startLabelStr,
-                                      String endLabelStr) {
+                                      String endLabelStr,
+                                      String questionId) {
 
         LinearLayout lLayout = new LinearLayout(this);
         lLayout.setOrientation(LinearLayout.VERTICAL);
@@ -263,7 +260,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         bar.setMax(5);
         bar.setBackground(getDrawable(R.drawable.edit_text));
         bar.setLayoutParams(layoutParams);
-
+        bar.setId(Integer.parseInt(questionId));
         lLayout.addView(bar);
 
 
@@ -284,16 +281,12 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         label_right.setLayoutParams(params);
         label_right.setText(endLabelStr);
 
-
-
         //labelLayout.addView(label_left);
         //labelLayout.addView(label_right);
 
         labelLayout.addView(label_left);
         labelLayout.addView(label_right);
         lLayout.addView(labelLayout);
-
-
 
         return lLayout;
     }
@@ -306,7 +299,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         RadioGroup rg = new RadioGroup(this);
         rg.setOrientation(RadioGroup.VERTICAL);
         rg.setLayoutParams(layoutParams);
-
+        rg.setId(count++);
         RadioButton startLabel  = new RadioButton(this);
         //startLabel.button
         RadioButton endLabel  = new RadioButton(this);
@@ -318,7 +311,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         startLabel.setSelected(true);
         startLabel.setTextColor(Color.WHITE);
         endLabel.setTextColor(Color.WHITE);
-
         //startLabel.setBackground(getDrawable(R.drawable.edit_text));
         //endLabel.setBackground(getDrawable(R.drawable.edit_text));
         endLabel.setText(endLabelStr);
@@ -448,15 +440,32 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         for (int i = 0; i < questionsViews.length; i++) {
             HashMap<String, String> response = new HashMap<String, String>();
             response.put("questionId", questionsArrayList.get(i).getquestionId());
-            if(edits[i] instanceof SeekBar){
-                response.put("response",Integer.toString(((SeekBar)edits[i]).getProgress()));
-                response.put("responseType", "Continuous");
-            }else{
+            //if(edits[i] instanceof SeekBar){
+            if(edits[i] instanceof RadioGroup){
                 // Extract which button is selected
                 // Google how to extract which button is selected for the given radioGroup.
                 RadioButton temp = (RadioButton)((RadioGroup)edits[i]).findViewById(((RadioGroup)edits[i]).getCheckedRadioButtonId());
                 response.put("response",temp.getText().toString());
                 response.put("responseType", "Categorical");
+            }else if(edits[i] instanceof LinearLayout){
+                LinearLayout layout = (LinearLayout) edits[i];
+                int count = layout.getChildCount();
+                View v;
+                for(int j=0;j<count;j++) {
+                    v = layout.getChildAt(j);
+                    if(v.getId() == Integer.parseInt(questionsArrayList.get(i).getquestionId())){
+                        //System.out.println("Seekbar found");
+                        SeekBar seekBar = (SeekBar)v;
+                        response.put("response",Integer.toString(seekBar.getProgress()));
+                        response.put("responseType", "Continuous");
+                        break;
+                    }
+                }
+                //int process = ((SeekBar)(((LinearLayout)edits[i]).
+                //        findViewById(Integer.parseInt(questionsArrayList.get(i).getquestionId())))).getProgress();
+                //System.out.print(process);
+                //response.put("response",Integer.toString(process));
+                //response.put("responseType", "Continuous");
             }
             responses.add(convertHMToString(response));
             //String answer = getAnswer(((SeekBar)edits[i]).getProgress());

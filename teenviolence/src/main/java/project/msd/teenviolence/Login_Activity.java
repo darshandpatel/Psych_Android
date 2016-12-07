@@ -46,10 +46,6 @@ public class Login_Activity extends Activity implements View.OnClickListener {
     EditText userName = null;
     EditText passowrd = null;
     static Login_Activity activity = null;
-    //static String ADDRESS = "http://ec2-52-37-136-210.us-west-2.compute.amazonaws.com:8080/TeenViolence_Server/";
-   // static String ADDRESS = "http://10.0.2.2:8080/TeenViolenceServer2/";
-
-    //static String ADDRESS = "http://10.0.2.2:8080/Psych-1/";
     static String ADDRESS = Constant.SERVER_ADDRESS;
     static boolean isDownloadComplete = false;
 
