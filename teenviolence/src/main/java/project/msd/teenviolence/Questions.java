@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.Gravity;
 import android.view.View;
 
@@ -300,9 +301,9 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         rg.setOrientation(RadioGroup.VERTICAL);
         rg.setLayoutParams(layoutParams);
         rg.setId(count++);
-        RadioButton startLabel  = new RadioButton(this);
+        AppCompatRadioButton startLabel  = new AppCompatRadioButton(this);
         //startLabel.button
-        RadioButton endLabel  = new RadioButton(this);
+        AppCompatRadioButton endLabel  = new AppCompatRadioButton(this);
         rg.addView(startLabel, layoutParams);
         rg.addView(endLabel, layoutParams);
         startLabel.setText(startLabelStr);
@@ -314,8 +315,23 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         //startLabel.setBackground(getDrawable(R.drawable.edit_text));
         //endLabel.setBackground(getDrawable(R.drawable.edit_text));
         endLabel.setText(endLabelStr);
-        //rg.check(startLabel.getId());
+        rg.check(startLabel.getId());
         rg.setBackground(getDrawable(R.drawable.edit_text));
+
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+
+                        new int[]{-android.R.attr.state_enabled}, //disabled
+                        new int[]{android.R.attr.state_enabled} //enabled
+                },
+                new int[] {
+                        Color.BLACK //disabled
+                        ,Color.parseColor("#25a396") //enabled
+
+                }
+        );
+        startLabel.setSupportButtonTintList(colorStateList);
+        endLabel.setSupportButtonTintList(colorStateList);
         return rg;
     }
 
@@ -374,7 +390,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
                         if (demoPlayed) {
                             startNewActivity(PlayDemo.class);
                         } else {
-                            startNewActivity(PlayGame.class);
+                        startNewActivity(PlayGame.class);
                         }
                     }
                 } else
@@ -444,7 +460,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             if(edits[i] instanceof RadioGroup){
                 // Extract which button is selected
                 // Google how to extract which button is selected for the given radioGroup.
-                RadioButton temp = (RadioButton)((RadioGroup)edits[i]).findViewById(((RadioGroup)edits[i]).getCheckedRadioButtonId());
+                AppCompatRadioButton temp = (AppCompatRadioButton)((RadioGroup)edits[i]).findViewById(((RadioGroup)edits[i]).getCheckedRadioButtonId());
                 response.put("response",temp.getText().toString());
                 response.put("responseType", "Categorical");
             }else if(edits[i] instanceof LinearLayout){
